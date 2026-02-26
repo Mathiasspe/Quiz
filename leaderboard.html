@@ -309,6 +309,11 @@ function slugify(n){return n.toLowerCase().trim().replace(/\s+/g,'_').replace(/[
 let prevLeader=null, prevCount=0, numQ=0;
 const prevScores={};
 let currentGameState='waiting';
+let registeredPlayers=new Set(); // tracks unique names
+
+function updateWaitCount(){
+  document.getElementById('waitPlayerCount').textContent=registeredPlayers.size;
+}
 
 // ── HOST ACTIONS ──
 window.hostAction = function(state){
@@ -518,8 +523,10 @@ onValue(ref(db,'scores'), snapshot=>{
   const data=snapshot.val();
 
   // Update waiting overlay player count
-  const wCount=data?Object.keys(data).length:0;
-  document.getElementById('waitPlayerCount').textContent=wCount;
+  // Track unique registered players
+  registeredPlayers.clear();
+  if(data) Object.values(data).forEach(e=>{ if(e.name) registeredPlayers.add(e.name.toLowerCase().trim()); });
+  updateWaitCount();
 
   if(!data){
     document.getElementById('playerCount').textContent='0';
