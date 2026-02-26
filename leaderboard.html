@@ -250,6 +250,40 @@ body{
   </table>
 </div>
 
+<!-- Host control panel -->
+<div class="host-panel" id="hostPanel">
+  <div class="host-label">🎮 Host</div>
+  <div class="host-state">Status: <strong id="hostStateLabel">venter</strong></div>
+  <div class="host-sep"></div>
+  <button class="host-btn green" id="btnStart" onclick="hostAction('countdown')">▶ Start quiz</button>
+  <button class="host-btn orange" id="btnHalftime" onclick="hostAction('halftime')" disabled>⏸ Halvtid</button>
+  <button class="host-btn green" id="btnResume" onclick="hostAction('playing')" style="display:none">▶ Fortsett</button>
+  <button class="host-btn red" id="btnFinish" onclick="hostAction('finished')" disabled>🏁 Avslutt</button>
+  <div class="host-sep"></div>
+  <button class="host-btn red" onclick="resetQuiz()" style="opacity:.5;font-size:.72rem;">↺ Reset</button>
+</div>
+
+<!-- Waiting overlay -->
+<div class="waiting-overlay hidden" id="waitingOverlay">
+  <div style="font-size:4rem">⏳</div>
+  <div class="waiting-title">Gutta Quiz</div>
+  <div class="waiting-sub">Klar for quiz-kveld? Trykk Start når alle er klare.</div>
+  <div class="waiting-players"><span id="waitPlayerCount">0</span> spillere innmeldt</div>
+</div>
+
+<!-- Halftime overlay -->
+<div class="halftime-overlay" id="halftimeOverlay">
+  <div style="font-size:3rem">🏁</div>
+  <div class="halftime-title">Halvtid!</div>
+  <div class="halftime-sub">Stillingen etter 10 spørsmål — poeng holdes hemmelig</div>
+  <div class="halftime-list" id="halftimeList"></div>
+  <div style="color:rgba(255,255,255,.3);font-size:.82rem;margin-top:8px">Trykk "Fortsett" for å gjenoppta quizen</div>
+</div>
+
+<!-- Countdown number (big) -->
+<div class="countdown-big" id="countdownBig"></div>
+
+
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import { getDatabase, ref, onValue, set, remove } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
@@ -446,6 +480,7 @@ function showHalftimeOverlay(players){
 
 // ── GAME STATE LISTENER ──
 onValue(ref(db,'gameState'), snapshot=>{
+  document.getElementById('connecting').classList.add('hidden');
   const state=snapshot.val()||'waiting';
   currentGameState=state;
 
@@ -479,6 +514,7 @@ onValue(ref(db,'gameState'), snapshot=>{
 
 // ── SCORES LISTENER ──
 onValue(ref(db,'scores'), snapshot=>{
+  document.getElementById('connecting').classList.add('hidden');
   const data=snapshot.val();
 
   // Update waiting overlay player count
