@@ -322,6 +322,7 @@ window.hostAction = function(state){
 window.resetQuiz = function(){
   if(!confirm('Reset leaderboard og spill? Dette sletter alle scores.')) return;
   remove(ref(db,'scores'));
+  remove(ref(db,'waiting'));
   set(ref(db,'gameState'),'waiting');
 };
 
@@ -515,6 +516,13 @@ onValue(ref(db,'gameState'), snapshot=>{
   } else {
     document.getElementById('halftimeOverlay').classList.remove('open');
   }
+});
+
+// ── WAITING PLAYERS LISTENER (updates innmeldt count) ──
+onValue(ref(db,'waiting'), snapshot=>{
+  const data = snapshot.val();
+  const count = data ? Object.keys(data).length : 0;
+  document.getElementById('waitPlayerCount').textContent = count;
 });
 
 // ── SCORES LISTENER ──
