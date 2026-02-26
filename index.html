@@ -592,11 +592,6 @@ function loadQuestion(){
 }
 function nextQuestion(){
   currentQIdx++;
-  // Update live progress in Firebase
-  if(typeof window.updateProgressFirebase==='function'){
-    window.updateProgressFirebase(playerName, currentQIdx, currentScore,
-      currentRounds.map(r=>({type:r.type,label:r.label,pts:r.pts,maxPts:r.maxPts,correct:r.correct})));
-  }
   if(currentQIdx>=ALL_QUESTIONS.length){ showResults(); return; }
   // Halftime check: after Q10, if gameState is 'halftime', pause
   if(currentQIdx===10 && window.gameStateSeen==='halftime'){
@@ -956,7 +951,14 @@ function submitMovie(){
   }
 }
 // ── FELLES ──
-function addScore(pts,round){currentScore+=pts;currentRounds.push(round);document.getElementById('hdrScore').textContent=currentScore;}
+function addScore(pts,round){
+  currentScore+=pts;currentRounds.push(round);document.getElementById('hdrScore').textContent=currentScore;
+  // Push live score to Firebase immediately after each answer
+  if(typeof window.updateProgressFirebase==='function'){
+    window.updateProgressFirebase(playerName, currentRounds.length, currentScore,
+      currentRounds.map(r=>({type:r.type,label:r.label,pts:r.pts,maxPts:r.maxPts,correct:r.correct})));
+  }
+}
 function endRound(){
   const inp=document.getElementById('guessInput'),btn=document.getElementById('guessBtn');
   if(inp)inp.disabled=true;if(btn)btn.disabled=true;
