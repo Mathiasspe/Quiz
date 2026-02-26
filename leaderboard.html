@@ -371,16 +371,19 @@ function animCount(el, from, to){
 
 // ── COUNTDOWN ON LEADERBOARD ──
 function showCountdown(from, onDone){
-  const el=document.getElementById('countdownBig');
   let n=from;
   function tick(){
+    // Replace element with clone to force CSS animation restart
+    const old=document.getElementById('countdownBig');
+    const el=old.cloneNode(false);
+    el.id='countdownBig';
     el.textContent=n;
-    el.className='countdown-big show';
-    void el.offsetWidth; // reflow to restart animation
-    el.className='countdown-big show';
+    old.parentNode.replaceChild(el, old);
+    // Small delay then add show class to trigger animation
+    requestAnimationFrame(()=>{ el.className='countdown-big show'; });
     n--;
     if(n>=0) setTimeout(tick, 1000);
-    else { el.className='countdown-big'; onDone && onDone(); }
+    else setTimeout(()=>{ el.className='countdown-big'; onDone && onDone(); }, 900);
   }
   tick();
 }
@@ -519,10 +522,11 @@ onValue(ref(db,'gameState'), snapshot=>{
 });
 
 // ── WAITING PLAYERS LISTENER (updates innmeldt count) ──
+let waitingCount = 0;
 onValue(ref(db,'waiting'), snapshot=>{
   const data = snapshot.val();
-  const count = data ? Object.keys(data).length : 0;
-  document.getElementById('waitPlayerCount').textContent = count;
+  waitingCount = data ? Object.keys(data).length : 0;
+  document.getElementById('waitPlayerCount').textContent = waitingCount;
 });
 
 // ── SCORES LISTENER ──
@@ -550,7 +554,8 @@ onValue(ref(db,'scores'), snapshot=>{
   });
 
   const players=Object.values(byName).sort((a,b)=>b.score-a.score);
-  document.getElementById('playerCount').textContent=players.length;
+  const finishedCount=players.filter(p=>p.finished).length;
+  document.getElementById('playerCount').textContent=finishedCount;
 
   players.forEach(p=>{ if(p.rounds) numQ=Math.max(numQ,Array.isArray(p.rounds)?p.rounds.length:0); });
 
