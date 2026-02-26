@@ -1069,7 +1069,7 @@ initNameScreen();
   const db = getDatabase(app);
 
   let myScoreKey = null;   // Firebase key for this player's score entry
-  let gameStateSeen = null;
+  window.gameStateSeen = null;
 
   // ── SUBMIT SCORE (called on finish) ──
   window.submitScoreToFirebase = function(name, score, maxScore, rounds) {
@@ -1134,7 +1134,7 @@ initNameScreen();
   // ── LISTEN TO GAME STATE ──
   onValue(ref(db, 'gameState'), (snapshot) => {
     const state = snapshot.val() || 'waiting';
-    gameStateSeen = state;
+    window.gameStateSeen = state;
 
     // Only act on state if player has entered name but not started yet
     if(state === 'countdown' && window._waitingForStart) {
