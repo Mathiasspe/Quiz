@@ -227,7 +227,7 @@ body{
     <div class="subtitle">laget av Mathias</div>
   </div>
   <div class="header-right">
-    <div class="player-count"><strong id="playerCount">0</strong> spillere ferdig</div>
+    <div class="player-count"><strong id="playerCount">0</strong> spillere</div>
     <div class="live-badge"><span class="live-dot"></span>LIVE</div>
   </div>
 </div>
@@ -490,7 +490,8 @@ function showHalftimeOverlay(players){
 // ── GAME STATE LISTENER ──
 onValue(ref(db,'gameState'), snapshot=>{
   document.getElementById('connecting').classList.add('hidden');
-  const state=snapshot.val()||'waiting';
+  const raw=snapshot.val();
+  const state=raw||'playing'; // default to 'playing' so leaderboard shows when gameState is unset
   currentGameState=state;
 
   // Update host panel
@@ -501,8 +502,8 @@ onValue(ref(db,'gameState'), snapshot=>{
   document.getElementById('btnFinish').disabled=!['playing','halftime'].includes(state);
   document.getElementById('btnResume').style.display=state==='halftime'?'block':'none';
 
-  // Waiting overlay
-  if(state==='waiting'){
+  // Waiting overlay — only show when gameState is explicitly 'waiting'
+  if(raw==='waiting'){
     document.getElementById('waitingOverlay').classList.remove('hidden');
   } else {
     document.getElementById('waitingOverlay').classList.add('hidden');
@@ -547,8 +548,7 @@ onValue(ref(db,'scores'), snapshot=>{
   });
 
   const players=Object.values(byName).sort((a,b)=>b.score-a.score);
-  const finishedCount=players.filter(p=>p.finished).length;
-  document.getElementById('playerCount').textContent=finishedCount;
+  document.getElementById('playerCount').textContent=players.length;
 
   players.forEach(p=>{ if(p.rounds) numQ=Math.max(numQ,Array.isArray(p.rounds)?p.rounds.length:0); });
 
