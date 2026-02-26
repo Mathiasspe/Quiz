@@ -1089,24 +1089,24 @@ initNameScreen();
 
   // ── UPDATE PROGRESS (called each question) ──
   window.updateProgressFirebase = function(name, currentQ, score, rounds) {
+    const data = {
+      name, score, currentQ, rounds,
+      maxScore: window._MAX_SCORE || 131,
+      finished: false,
+      timestamp: Date.now()
+    };
     if(!myScoreKey) {
       // First progress update — create entry
       const scoresRef = ref(db, 'scores');
       const newEntry = push(scoresRef);
       myScoreKey = newEntry.key;
-      set(newEntry, {
-        name, score, currentQ, rounds,
-        maxScore: window._MAX_SCORE || 131,
-        finished: false,
-        timestamp: Date.now()
-      });
+      set(newEntry, data)
+        .then(() => console.log("Progress created:", name, "Q" + currentQ, score + "pts"))
+        .catch(err => console.error("Firebase write error:", err));
     } else {
-      set(ref(db, 'scores/' + myScoreKey), {
-        name, score, currentQ, rounds,
-        maxScore: window._MAX_SCORE || 131,
-        finished: false,
-        timestamp: Date.now()
-      });
+      set(ref(db, 'scores/' + myScoreKey), data)
+        .then(() => console.log("Progress updated:", name, "Q" + currentQ, score + "pts"))
+        .catch(err => console.error("Firebase write error:", err));
     }
   };
 
