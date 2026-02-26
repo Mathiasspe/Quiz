@@ -377,7 +377,7 @@ button:active:not(:disabled), .mc-opt:active:not(.disabled),
       <button class="btn" id="startBtn" onclick="startQuiz()" style="margin-top:16px;">Start quiz →</button>
     </div>
     <div id="nameLb"></div>
-    <div class="capacity-note" id="capNote" style="display:none"><strong>Quizen er full!</strong> Maks 12 spillere nådd.</div>
+    <div class="capacity-note" id="capNote" style="display:none"><strong>Quizen er full!</strong> Maks 15 spillere nådd.</div>
   </div>
 
   <div class="screen" id="screen-waiting">
@@ -529,7 +529,7 @@ const ALL_QUESTIONS=[
   {type:"logo",maxPts:5,brand:"LG",logoKey:"lg",correctIdx:2,question:"Hvilket av disse er den ekte LG-logoen?",funFact:"LG-logoen er et stilisert ansikt: C-buen er konturen, L er nese og munn, og den lille prikken er øyet — plassert øverst til høyre inne i sirkelen. 👁️"}
 ];
 
-const MAX_PLAYERS=12;
+const MAX_PLAYERS=15;
 const MAX_SCORE=ALL_QUESTIONS.reduce((s,q)=>s+(q.maxPts||0),0);
 window._MAX_SCORE=MAX_SCORE;
 let leaderboard=[],playerName='',questionOrder=[],currentQIdx=0,currentScore=0,currentRounds=[],Q=null;
@@ -1069,7 +1069,7 @@ initNameScreen();
   const db = getDatabase(app);
 
   let myScoreKey = null;   // Firebase key for this player's score entry
-  let gameStateSeen = null;
+  window.gameStateSeen = null;
 
   // ── SUBMIT SCORE (called on finish) ──
   window.submitScoreToFirebase = function(name, score, maxScore, rounds) {
@@ -1134,7 +1134,7 @@ initNameScreen();
   // ── LISTEN TO GAME STATE ──
   onValue(ref(db, 'gameState'), (snapshot) => {
     const state = snapshot.val() || 'waiting';
-    gameStateSeen = state;
+    window.gameStateSeen = state;
 
     // Only act on state if player has entered name but not started yet
     if(state === 'countdown' && window._waitingForStart) {
