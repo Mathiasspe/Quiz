@@ -138,40 +138,61 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:1
 .logo-option.correct .logo-checkmark,.logo-option.wrong .logo-checkmark{display:flex;}
 .logo-option.correct .logo-checkmark{background:var(--accent);color:#080a0e;}
 .logo-option.wrong .logo-checkmark{background:var(--red);color:#fff;}
-/* ── HØYERE / LAVERE ── */
-.hilo-wrap{display:flex;flex-direction:column;gap:0;}
-.hilo-ref-card{background:var(--surf2);border-radius:12px;padding:18px 20px;display:flex;align-items:center;gap:16px;margin-bottom:12px;border:1px solid var(--border);}
-.hilo-ref-flag{height:32px;border-radius:3px;box-shadow:0 1px 5px rgba(0,0,0,.4);flex-shrink:0;}
-.hilo-ref-info{flex:1;}
-.hilo-ref-label{font-size:.65rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:3px;}
-.hilo-ref-name{font-size:.95rem;font-weight:700;color:var(--text);}
-.hilo-ref-value{font-family:var(--display);font-size:1.5rem;font-weight:900;color:var(--accent);white-space:nowrap;}
-.hilo-connector{text-align:center;font-size:.7rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin:2px 0;display:flex;align-items:center;gap:10px;}
-.hilo-connector::before,.hilo-connector::after{content:'';flex:1;height:1px;background:var(--border);}
-.hilo-guess-card{background:var(--surf);border:2px solid var(--border);border-radius:12px;padding:18px 20px;}
-.hilo-guess-card.correct-card{border-color:var(--accent);background:rgba(79,255,176,.05);}
-.hilo-guess-card.wrong-card{border-color:var(--red);background:rgba(255,95,109,.05);}
-.hilo-guess-header{display:flex;align-items:center;gap:12px;margin-bottom:14px;}
-.hilo-guess-flag{height:32px;border-radius:3px;box-shadow:0 1px 5px rgba(0,0,0,.4);}
-.hilo-guess-info{flex:1;}
-.hilo-guess-label{font-size:.78rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:5px;}
-.hilo-guess-name{font-size:1.4rem;font-weight:900;color:var(--text);font-family:var(--display);}
-.hilo-question-line{font-size:.82rem;font-weight:600;color:var(--muted);margin-bottom:18px;text-align:center;}
-.hilo-question-line span{color:var(--yellow);}
-.hilo-buttons{display:flex;gap:14px;}
-.hilo-btn{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;border:2px solid;border-radius:12px;padding:16px 10px;font-family:var(--font);font-weight:700;font-size:.85rem;letter-spacing:.5px;cursor:pointer;transition:all .2s;background:transparent;touch-action:manipulation;}
-.hilo-btn-less{border-color:var(--red);color:var(--red);}
-.hilo-btn-less:hover:not(:disabled){background:rgba(255,95,109,.12);transform:scale(1.02);}
-.hilo-btn-more{border-color:var(--accent);color:var(--accent);}
-.hilo-btn-more:hover:not(:disabled){background:rgba(79,255,176,.1);transform:scale(1.02);}
-.hilo-btn:disabled{opacity:.4;cursor:default;}
-.hilo-btn-icon{font-size:1.5rem;line-height:1;}
-.hilo-revealed-value{font-family:var(--display);font-size:1.8rem;font-weight:900;text-align:center;margin:12px 0 4px;animation:fadeUp .4s ease;}
-.hilo-progress{display:flex;gap:6px;justify-content:center;margin-top:16px;}
+/* ── HØYERE / LAVERE (som Tradles «More or Less») ── */
+.hilo-ref{background:var(--surf2);border:1px solid var(--border);border-radius:12px;padding:12px 14px;margin-bottom:14px;}
+.hilo-ref.slide-in{animation:fadeUp .35s ease;}
+.hilo-ref-caption{font-size:.62rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:6px;}
+.hilo-ref-head{display:flex;align-items:center;gap:8px;}
+.hilo-ref-dot{width:7px;height:7px;border-radius:50%;background:var(--accent);box-shadow:0 0 6px rgba(79,255,176,.6);flex-shrink:0;}
+.hilo-ref-flag{height:20px;border-radius:2px;box-shadow:0 1px 4px rgba(0,0,0,.4);}
+.hilo-ref-country{font-size:.78rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--yellow);}
+.hilo-ref-commodity{font-weight:700;font-size:1rem;margin:4px 0 10px;}
+.hilo-ref-boxes{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.hilo-ref-box{background:var(--surf3);border:1px solid var(--border);border-radius:8px;padding:7px 8px;text-align:center;}
+.hilo-ref-box-label{font-size:.6rem;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--muted);}
+.hilo-ref-box-value{font-family:var(--display);font-size:1.15rem;font-weight:900;color:var(--text);margin-top:1px;}
+.hilo-ref-box-value.round{color:var(--yellow);}
+.hilo-prompt{text-align:center;font-size:.78rem;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:var(--yellow);margin-bottom:12px;}
+.hilo-prompt .more{color:var(--accent);font-family:var(--display);font-style:italic;font-size:1.15rem;letter-spacing:.5px;text-transform:uppercase;}
+.hilo-prompt .less{color:var(--red);font-family:var(--display);font-style:italic;font-size:1.15rem;letter-spacing:.5px;text-transform:uppercase;}
+.hilo-stage{position:relative;overflow:hidden;border-radius:16px;}
+.hilo-card{position:relative;background:var(--surf2);border:2px solid rgba(255,201,71,.25);border-radius:16px;min-height:380px;padding:36px 20px 24px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;touch-action:pan-y;user-select:none;-webkit-user-select:none;cursor:grab;will-change:transform;}
+.hilo-card.dragging{cursor:grabbing;transition:none;}
+.hilo-card.settle{transition:transform .25s ease,border-color .2s;}
+.hilo-card.fly{transition:transform .35s ease-in,opacity .35s ease-in;opacity:0;}
+.hilo-card.enter{animation:hiloEnter .35s cubic-bezier(.22,1,.36,1);}
+@keyframes hiloEnter{from{opacity:0;transform:translateY(24px) scale(.97)}to{opacity:1;transform:none}}
+.hilo-card.correct-card{border-color:var(--accent);background:rgba(79,255,176,.05);}
+.hilo-card.wrong-card{border-color:var(--red);background:rgba(255,95,109,.05);}
+.hilo-card-flag{height:62px;border-radius:6px;box-shadow:0 0 0 3px rgba(255,255,255,.08),0 6px 22px rgba(255,201,71,.25);margin-bottom:16px;pointer-events:none;}
+.hilo-card-country{font-size:.92rem;font-weight:800;letter-spacing:3px;text-transform:uppercase;color:var(--yellow);}
+.hilo-card-commodity{font-family:var(--display);font-size:1.9rem;font-weight:900;color:var(--text);line-height:1.15;margin-top:4px;overflow-wrap:anywhere;}
+.hilo-card-divider{width:80%;height:1px;margin:14px 0;background:linear-gradient(90deg,transparent,rgba(255,201,71,.45),transparent);position:relative;}
+.hilo-card-divider::after{content:'';position:absolute;left:50%;top:-2px;width:5px;height:5px;margin-left:-2.5px;border-radius:50%;background:var(--yellow);}
+.hilo-card-value{min-width:150px;padding:14px 18px;border:2px dashed var(--border);border-radius:10px;font-family:var(--display);font-size:1.6rem;font-weight:900;color:var(--muted);}
+.hilo-card.correct-card .hilo-card-value{border-style:solid;border-color:var(--accent);color:var(--accent);animation:fadeUp .35s ease;}
+.hilo-card.wrong-card .hilo-card-value{border-style:solid;border-color:var(--red);color:var(--red);animation:fadeUp .35s ease;}
+.hilo-card-actions{display:flex;justify-content:space-between;width:100%;margin-top:34px;padding:0 6px;}
+.hilo-btn{display:flex;flex-direction:column;align-items:center;gap:7px;background:none;border:none;font-family:var(--font);font-size:.82rem;font-weight:800;letter-spacing:1px;text-transform:uppercase;cursor:pointer;touch-action:manipulation;}
+.hilo-btn-circle{width:62px;height:62px;border-radius:50%;border:3px solid;display:flex;align-items:center;justify-content:center;font-size:1.6rem;font-weight:700;transition:transform .15s,background .15s;}
+.hilo-btn-less{color:var(--red);}
+.hilo-btn-less .hilo-btn-circle{border-color:var(--red);background:rgba(255,95,109,.12);box-shadow:0 0 18px rgba(255,95,109,.35);}
+.hilo-btn-more{color:var(--accent);}
+.hilo-btn-more .hilo-btn-circle{border-color:var(--accent);background:rgba(79,255,176,.1);box-shadow:0 0 18px rgba(79,255,176,.3);}
+.hilo-btn:hover:not(:disabled) .hilo-btn-circle{transform:scale(1.07);}
+.hilo-btn:disabled{opacity:.35;cursor:default;}
+.hilo-progress{display:flex;gap:6px;justify-content:center;margin-top:14px;}
 .hl-dot{width:8px;height:8px;border-radius:50%;background:var(--surf3);transition:all .3s;}
 .hl-dot.done-correct{background:var(--accent);}
 .hl-dot.done-wrong{background:var(--red);}
 .hl-dot.current{background:var(--yellow);box-shadow:0 0 6px rgba(255,201,71,.5);}
+@media (max-width:480px){
+  .hilo-card{min-height:340px;padding:28px 14px 20px;}
+  .hilo-card-flag{height:52px;}
+  .hilo-card-commodity{font-size:1.55rem;}
+  .hilo-card-value{font-size:1.35rem;}
+  .hilo-btn-circle{width:58px;height:58px;}
+}
 
 /* Feedback */
 .feedback{margin-top:16px;padding:14px 18px;border-radius:10px;font-size:.92rem;display:none;line-height:1.6;}
@@ -483,7 +504,7 @@ const MAP_QUESTIONS=[
   {regionId:"middle-east",regionLabel:"Den uthevede regionen (Midtøsten)",
    question:"Den grønne regionen er uthevet. Hva er den klart viktigste eksportvaren fra Midtøsten?",
    options:["Tekstiler","Olje og gass","Gull og diamanter","Jordbruksprodukter"],answer:1,
-   funFact:"Midtøsten sitter på over 48% av verdens kjente oljereserver. Saudi-Arabia alene eksporterer for over 200 milliarder dollar i olje hvert år. 🛢️"},
+   funFact:"Midtøsten sitter på over 48% av verdens kjente oljereserver. Saudi-Arabia alene eksporterer olje for over 1 900 milliarder kroner hvert år. 🛢️"},
   {regionId:"west-africa",regionLabel:"Den uthevede regionen (Vest-Afrika)",
    question:"Den grønne regionen er uthevet. Vest-Afrika dominerer verdensmarkedet for hvilken vare?",
    options:["Kobber","Kaffe","Kakao","Diamanter"],answer:2,
@@ -503,26 +524,26 @@ const MAP_QUESTIONS=[
 ];
 
 const ALL_QUESTIONS=[
-  {type:"tradle",difficulty:"medium",maxPts:10,answer:"Norge",totalExports:"$152 mrd",source:{text:"OEC World – eksportdata 2022",url:"https://oec.world/en/profile/country/nor"},exports:[{name:"Olje og gass",pct:55},{name:"Maskiner",pct:15},{name:"Fisk",pct:12},{name:"Metaller",pct:10},{name:"Kjemikalier",pct:8}]},
-  {type:"tradle",difficulty:"easy",maxPts:10,answer:"Japan",totalExports:"$756 mrd",source:{text:"OEC World – eksportdata 2022",url:"https://oec.world/en/profile/country/jpn"},exports:[{name:"Kjøretøy",pct:34},{name:"Elektronikk",pct:22},{name:"Maskiner",pct:20},{name:"Kjemikalier",pct:11},{name:"Metaller",pct:8},{name:"Plast",pct:5}]},
-  {type:"tradle",difficulty:"hard",maxPts:10,answer:"Sveits",totalExports:"$461 mrd",source:{text:"OEC World – eksportdata 2022",url:"https://oec.world/en/profile/country/che"},exports:[{name:"Legemidler",pct:38},{name:"Gull",pct:22},{name:"Kjemikalier",pct:16},{name:"Maskiner",pct:12},{name:"Elektronikk",pct:7},{name:"Klokker",pct:5}]},
+  {type:"tradle",difficulty:"medium",maxPts:10,answer:"Norge",totalExports:"1 460 mrd. kr",source:{text:"OEC World – eksportdata 2022, omregnet til NOK (snittkurs 9,61 kr/$)",url:"https://oec.world/en/profile/country/nor"},exports:[{name:"Olje og gass",pct:55},{name:"Maskiner",pct:15},{name:"Fisk",pct:12},{name:"Metaller",pct:10},{name:"Kjemikalier",pct:8}]},
+  {type:"tradle",difficulty:"easy",maxPts:10,answer:"Japan",totalExports:"7 270 mrd. kr",source:{text:"OEC World – eksportdata 2022, omregnet til NOK (snittkurs 9,61 kr/$)",url:"https://oec.world/en/profile/country/jpn"},exports:[{name:"Kjøretøy",pct:34},{name:"Elektronikk",pct:22},{name:"Maskiner",pct:20},{name:"Kjemikalier",pct:11},{name:"Metaller",pct:8},{name:"Plast",pct:5}]},
+  {type:"tradle",difficulty:"hard",maxPts:10,answer:"Sveits",totalExports:"4 430 mrd. kr",source:{text:"OEC World – eksportdata 2022, omregnet til NOK (snittkurs 9,61 kr/$)",url:"https://oec.world/en/profile/country/che"},exports:[{name:"Legemidler",pct:38},{name:"Gull",pct:22},{name:"Kjemikalier",pct:16},{name:"Maskiner",pct:12},{name:"Elektronikk",pct:7},{name:"Klokker",pct:5}]},
   {type:"hilo",maxPts:8,
-   source:{text:"OEC World – eksportdata 2022",url:"https://oec.world/en/profile/country/"},
+   source:{text:"OEC World – eksportdata 2022, omregnet til NOK (snittkurs 9,61 kr/$)",url:"https://oec.world/en/profile/country/"},
    items:[
-    {country:"Italia",flagCode:"it",commodity:"Ris",value:959,display:"$959 M"},
-    {country:"USA",flagCode:"us",commodity:"Biler",value:57000,isMore:true,display:"$57 mrd",funFact:"USA eksporterer kjøretøy for over 57 milliarder dollar — mer enn 59 ganger Italias riseksport."},
-    {country:"Japan",flagCode:"jp",commodity:"Stål",value:32000,isMore:false,display:"$32 mrd",funFact:"Japans ståleksport er enorm, men faktisk lavere enn USAs bileksport."},
-    {country:"Brasil",flagCode:"br",commodity:"Soyabønner",value:49000,isMore:true,display:"$49 mrd",funFact:"Brasil er verdens klart største soyaeksportør — Kina er nesten eneste kjøper."},
-    {country:"Norge",flagCode:"no",commodity:"Laks",value:12000,isMore:false,display:"$12 mrd",funFact:"Norge dominerer global lakseksport med nesten 60% av markedet — men langt under brasiliansk soya."}
+    {country:"Italia",flagCode:"it",commodity:"Ris",value:959},
+    {country:"USA",flagCode:"us",commodity:"Biler",value:57000,funFact:"USA eksporterer kjøretøy for rundt 550 milliarder kroner — mer enn 59 ganger Italias riseksport."},
+    {country:"Japan",flagCode:"jp",commodity:"Stål",value:32000,funFact:"Japans ståleksport er enorm, men faktisk lavere enn USAs bileksport."},
+    {country:"Brasil",flagCode:"br",commodity:"Soyabønner",value:49000,funFact:"Brasil er verdens klart største soyaeksportør — Kina er nesten eneste kjøper."},
+    {country:"Norge",flagCode:"no",commodity:"Laks",value:12000,funFact:"Norge dominerer global lakseksport med nesten 60% av markedet — men langt under brasiliansk soya."}
   ]},
   {type:"hilo",maxPts:8,
-   source:{text:"OEC World – eksportdata 2022",url:"https://oec.world/en/profile/country/"},
+   source:{text:"OEC World – eksportdata 2022, omregnet til NOK (snittkurs 9,61 kr/$)",url:"https://oec.world/en/profile/country/"},
    items:[
-    {country:"Sveits",flagCode:"ch",commodity:"Klokker",value:24000,display:"$24 mrd"},
-    {country:"Kina",flagCode:"cn",commodity:"Leketøy",value:35000,isMore:true,display:"$35 mrd",funFact:"Kina produserer over 70% av verdens leketøy og eksporterer for mer enn Sveits sine klokker."},
-    {country:"India",flagCode:"in",commodity:"Te",value:800,isMore:false,display:"$800 M",funFact:"Til tross for å være verdens nest største teprodusent er eksportverdien bare en brøkdel av kinesisk leketøy."},
-    {country:"Etiopia",flagCode:"et",commodity:"Kaffe",value:1400,isMore:true,display:"$1,4 mrd",funFact:"Etiopia, kaffe sitt hjemland, eksporterer mer enn India eksporterer te — men fortsatt beskjedent globalt."},
-    {country:"Colombia",flagCode:"co",commodity:"Kaffe",value:3700,isMore:true,display:"$3,7 mrd",funFact:"Colombia er nummer to i kaffeeksport og eksporterer nesten tre ganger så mye som Etiopia."}
+    {country:"Sveits",flagCode:"ch",commodity:"Klokker",value:24000},
+    {country:"Kina",flagCode:"cn",commodity:"Leketøy",value:35000,funFact:"Kina produserer over 70% av verdens leketøy og eksporterer for mer enn Sveits sine klokker."},
+    {country:"India",flagCode:"in",commodity:"Te",value:800,funFact:"Til tross for å være verdens nest største teprodusent er eksportverdien bare en brøkdel av kinesisk leketøy."},
+    {country:"Etiopia",flagCode:"et",commodity:"Kaffe",value:1400,funFact:"Etiopia, kaffe sitt hjemland, eksporterer mer enn India eksporterer te — men fortsatt beskjedent globalt."},
+    {country:"Colombia",flagCode:"co",commodity:"Kaffe",value:3700,funFact:"Colombia er nummer to i kaffeeksport og eksporterer nesten tre ganger så mye som Etiopia."}
   ]},
   {type:"movie",maxPts:6,posterKey:"walle",emojis:"🤖❤️🗑️🌱",
    hint:"Pixar-animasjonsfilm fra 2008",
@@ -820,101 +841,131 @@ function selectLogo(idx){
   showFeedback(correct?`🎉 Riktig! +${pts} poeng — ${Q.funFact}`:`Feil — det var alternativ ${Q.correctIdx+1}. ${Q.funFact}`,correct);endRound();
 }
 // ── HØYERE / LAVERE ──
-// Chain format: items[0] is the starting reference (shown, no guess).
-// For each subsequent item, user guesses if value is MORE or LESS than previous.
-let hiloIdx=0,hiloScore=0,hiloResults=[];
+// Som Tradles «More or Less»: referansen øverst med eksportverdien, og et stort kort med neste land/vare.
+// Sveip/trykk → for MER og ← for MINDRE (piltastene virker også). Det avslørte kortet blir ny referanse.
+// value er eksport i millioner dollar som i kilden, og vises i kroner; årstallet hentes fra Q.year (standard 2022).
+let hiloIdx=0,hiloScore=0,hiloResults=[],hiloBusy=false;
+const USD_NOK=9.61; // Norges Banks snittkurs for 2022, samme år som eksporttallene
+function fmtNok(usdMill){
+  const kr=usdMill*USD_NOK; // millioner kroner
+  if(kr<1000)return Math.round(kr).toLocaleString('nb-NO')+' mill. kr';
+  const mrd=kr/1000;
+  return mrd.toLocaleString('nb-NO',{maximumFractionDigits:mrd>=100?0:1})+' mrd. kr';
+}
+function genitive(name){return /[sxz]$/i.test(name)?name+"'":name+'s';}
 function renderHilo(card){
-  hiloIdx=1;hiloScore=0;hiloResults=[];  // Start at 1 — item[0] is reference
-  card.innerHTML=buildHiloHTML()+`<div class="hilo-progress" id="hlProgress"></div>${Q.source?`<div class="source-link" style="margin-top:12px;">📊 Kilde: <a href="${Q.source.url}" target="_blank" rel="noopener">${escHtml(Q.source.text)}</a></div>`:''}<div class="feedback" id="feedback"></div>`;
+  hiloIdx=1;hiloScore=0;hiloResults=[];hiloBusy=false;
+  card.innerHTML=`${typeBadge(`Høyere eller lavere · ${Q.maxPts} poeng · ${Q.items.length-1} runder`,'var(--yellow)')}
+    <div id="hiloRef"></div>
+    <div class="hilo-prompt">Sveip for å gjette: <span class="more">mer</span> eller <span class="less">mindre</span>?</div>
+    <div class="hilo-stage" id="hiloStage"></div>
+    <div class="hilo-progress" id="hlProgress"></div>
+    ${Q.source?`<div class="source-link" style="margin-top:12px;">📊 Kilde: <a href="${Q.source.url}" target="_blank" rel="noopener">${escHtml(Q.source.text)}</a></div>`:''}
+    <div class="feedback" id="feedback"></div>`;
+  hiloShowRound(false);
+}
+function hiloShowRound(animate){
+  const ref=Q.items[hiloIdx-1],cur=Q.items[hiloIdx],flag=c=>`https://flagcdn.com/h80/${c}.png`;
+  document.getElementById('hiloRef').innerHTML=`<div class="hilo-ref${animate?' slide-in':''}">
+      <div class="hilo-ref-caption">Sammenlign med</div>
+      <div class="hilo-ref-head"><span class="hilo-ref-dot"></span><img class="hilo-ref-flag" src="${flag(ref.flagCode)}" alt="" onerror="this.style.display='none'"/><span class="hilo-ref-country">${escHtml(ref.country)}</span></div>
+      <div class="hilo-ref-commodity">${escHtml(ref.commodity)}</div>
+      <div class="hilo-ref-boxes">
+        <div class="hilo-ref-box"><div class="hilo-ref-box-label">Eksport ${Q.year||2022}</div><div class="hilo-ref-box-value">${fmtNok(ref.value)}</div></div>
+        <div class="hilo-ref-box"><div class="hilo-ref-box-label">Runde</div><div class="hilo-ref-box-value round">${hiloIdx} / ${Q.items.length-1}</div></div>
+      </div>
+    </div>`;
+  document.getElementById('hiloStage').innerHTML=`<div class="hilo-card${animate?' enter':''}" id="hiloCard">
+      <img class="hilo-card-flag" src="${flag(cur.flagCode)}" alt="${escHtml(cur.country)}" draggable="false" onerror="this.style.display='none'"/>
+      <div class="hilo-card-country">${escHtml(cur.country)}</div>
+      <div class="hilo-card-commodity">${escHtml(cur.commodity)}</div>
+      <div class="hilo-card-divider"></div>
+      <div class="hilo-card-value" id="hlValue">???</div>
+      <div class="hilo-card-actions">
+        <button class="hilo-btn hilo-btn-less" id="hlBtnLess" onclick="answerHilo(false)"><span class="hilo-btn-circle">←</span>Mindre</button>
+        <button class="hilo-btn hilo-btn-more" id="hlBtnMore" onclick="answerHilo(true)"><span class="hilo-btn-circle">→</span>Mer</button>
+      </div>
+    </div>`;
+  hiloBindSwipe(document.getElementById('hiloCard'));
   updateHiloProgress();
 }
-function buildHiloHTML(){
-  const ref=Q.items[hiloIdx-1];
-  const cur=Q.items[hiloIdx];
-  return`<div class="hilo-wrap" id="hiloWrap">
-    <div class="hilo-ref-card">
-      <img class="hilo-ref-flag" src="https://flagcdn.com/h40/${ref.flagCode}.png" alt="${escHtml(ref.country)}" onerror="this.style.display='none'"/>
-      <div class="hilo-ref-info">
-        <div class="hilo-ref-label">${escHtml(ref.country)} · ${escHtml(ref.commodity)}</div>
-        <div class="hilo-ref-name">Eksport ${new Date().getFullYear()-2} (referanse)</div>
-      </div>
-      <div class="hilo-ref-value">${escHtml(ref.display)}</div>
-    </div>
-    <div class="hilo-connector">er eksport av dette høyere eller lavere?</div>
-    <div class="hilo-guess-card" id="hiloGuessCard">
-      <div class="hilo-guess-header">
-        <img class="hilo-guess-flag" src="https://flagcdn.com/h40/${cur.flagCode}.png" alt="${escHtml(cur.country)}" onerror="this.style.display='none'"/>
-        <div class="hilo-guess-info">
-          <div class="hilo-guess-label">${escHtml(cur.country)}</div>
-          <div class="hilo-guess-name">${escHtml(cur.commodity)}</div>
-        </div>
-      </div>
-      <div class="hilo-question-line">Er <span>${escHtml(cur.country)}s eksport av ${escHtml(cur.commodity)}</span> høyere eller lavere?</div>
-      <div class="hilo-buttons">
-        <button class="hilo-btn hilo-btn-more" id="hlBtnMore" onclick="answerHilo(true)">
-          <span class="hilo-btn-icon">⬆️</span>HØYERE
-        </button>
-        <button class="hilo-btn hilo-btn-less" id="hlBtnLess" onclick="answerHilo(false)">
-          <span class="hilo-btn-icon">⬇️</span>LAVERE
-        </button>
-      </div>
-    </div>
-  </div>`;
+// Dra kortet til høyre (mer) eller venstre (mindre); slipp før terskelen for å angre
+function hiloBindSwipe(el){
+  let start=null,dx=0;
+  el.addEventListener('pointerdown',e=>{
+    if(done||hiloBusy||e.target.closest('button'))return;
+    start={x:e.clientX,id:e.pointerId};dx=0;el.classList.add('dragging');
+    try{el.setPointerCapture(e.pointerId);}catch{}
+  });
+  el.addEventListener('pointermove',e=>{
+    if(!start||e.pointerId!==start.id)return;
+    dx=e.clientX-start.x;
+    const k=Math.min(1,Math.abs(dx)/100);
+    el.style.transform=`translateX(${dx}px) rotate(${dx/18}deg)`;
+    el.style.borderColor=dx>0?`rgba(79,255,176,${.25+.75*k})`:`rgba(255,95,109,${.25+.75*k})`;
+  });
+  const end=e=>{
+    if(!start||e.pointerId!==start.id)return;
+    start=null;el.classList.remove('dragging');
+    if(Math.abs(dx)>Math.min(110,el.offsetWidth*.28)){answerHilo(dx>0);return;}
+    el.classList.add('settle');el.style.transform='';el.style.borderColor='';
+    setTimeout(()=>el.classList.remove('settle'),260);
+  };
+  el.addEventListener('pointerup',end);el.addEventListener('pointercancel',end);
 }
+document.addEventListener('keydown',e=>{
+  if(Q?.type!=='hilo'||!document.getElementById('screen-question').classList.contains('active'))return;
+  if(e.key==='ArrowRight'){e.preventDefault();answerHilo(true);}
+  else if(e.key==='ArrowLeft'){e.preventDefault();answerHilo(false);}
+});
 function updateHiloProgress(){
   const prog=document.getElementById('hlProgress');
   if(!prog)return;
-  const guessCount=Q.items.length-1;
-  prog.innerHTML=Array.from({length:guessCount},(_,i)=>{
+  prog.innerHTML=Array.from({length:Q.items.length-1},(_,i)=>{
     let cls='hl-dot';
-    const gi=i;  // guess index (0-based relative to guesses)
-    if(gi<hiloResults.length)cls+=' '+(hiloResults[gi]?'done-correct':'done-wrong');
-    else if(gi===hiloResults.length)cls+=' current';
+    if(i<hiloResults.length)cls+=' '+(hiloResults[i]?'done-correct':'done-wrong');
+    else if(i===hiloResults.length)cls+=' current';
     return`<div class="${cls}"></div>`;
   }).join('');
 }
 function answerHilo(guessedMore){
-  if(done)return;
-  const cur=Q.items[hiloIdx];
-  const correct=guessedMore===cur.isMore;
+  if(done||hiloBusy)return;
+  hiloBusy=true;
+  const ref=Q.items[hiloIdx-1],cur=Q.items[hiloIdx];
+  const correct=guessedMore===(cur.value>ref.value);
   hiloResults.push(correct);
   if(correct)hiloScore++;
-  // Disable buttons
-  const btnL=document.getElementById('hlBtnLess'),btnM=document.getElementById('hlBtnMore');
-  if(btnL)btnL.disabled=true;if(btnM)btnM.disabled=true;
-  // Show revealed value + color card
-  const gc=document.getElementById('hiloGuessCard');
-  if(gc){
-    gc.classList.add(correct?'correct-card':'wrong-card');
-    const rev=document.createElement('div');
-    rev.className='hilo-revealed-value';
-    rev.style.color=correct?'var(--accent)':'var(--red)';
-    rev.textContent=cur.display;
-    gc.appendChild(rev);
-  }
+  ['hlBtnLess','hlBtnMore'].forEach(id=>{const b=document.getElementById(id);if(b)b.disabled=true;});
+  // Kortet glir tilbake på plass og viser svaret
+  const card=document.getElementById('hiloCard');
+  if(card){card.classList.add('settle',correct?'correct-card':'wrong-card');card.style.transform='';card.style.borderColor='';}
+  const val=document.getElementById('hlValue');if(val)val.textContent=fmtNok(cur.value);
   updateHiloProgress();
-  showFeedback(correct?`✅ Riktig! ${cur.display} — ${cur.funFact}`:`❌ Feil! Det var ${cur.display}. ${cur.funFact}`,correct,false);
-  // Move to next after delay (unless the player skipped the question meanwhile)
+  const what=`${genitive(cur.country)} eksport av ${cur.commodity.toLowerCase()} var ${fmtNok(cur.value)}`;
+  showFeedback(`${correct?'✅ Riktig!':'❌ Feil!'} ${escHtml(what)}. ${escHtml(cur.funFact||'')}`,correct,false);
+  // Neste runde etter en pause (med mindre spilleren hoppet over spørsmålet i mellomtiden)
   const thisQ=Q;
   setTimeout(()=>{
     if(Q!==thisQ||done)return;
-    hiloIdx++;
-    if(hiloIdx>=Q.items.length){
+    if(hiloIdx+1>=Q.items.length){
       done=true;
       const pts=Math.round(Q.maxPts*(hiloScore/(Q.items.length-1)));
       addScore(pts,{type:'hilo',label:`${Q.items[0].country} → …`,pts,maxPts:Q.maxPts,correct:hiloScore===Q.items.length-1});
       const fb=document.getElementById('feedback');
-      if(fb){fb.innerHTML=`${hiloScore}/${Q.items.length-1} riktige — +${pts} poeng!`;fb.className='feedback '+(pts>0?'ok':'bad');fb.style.display='block';}
+      if(fb){fb.innerHTML=`<strong>${hiloScore}/${Q.items.length-1} riktige — +${pts} poeng!</strong><br>${fb.innerHTML}`;fb.className='feedback '+(pts>0?'ok':'bad');fb.style.display='block';}
       endRound();
-    } else {
-      const fb=document.getElementById('feedback');if(fb)fb.style.display='none';
-      // Rebuild the comparison section
-      const wrap=document.getElementById('hiloWrap');
-      if(wrap){wrap.outerHTML=buildHiloHTML();}
-      else{const card=document.getElementById('qCard');if(card)card.innerHTML=buildHiloHTML()+`<div class="hilo-progress" id="hlProgress"></div>${Q.source?`<div class="source-link" style="margin-top:12px;">📊 Kilde: <a href="${Q.source.url}" target="_blank" rel="noopener">${escHtml(Q.source.text)}</a></div>`:''}<div class="feedback" id="feedback"></div>`;}
-      updateHiloProgress();
+      return;
     }
-  },2000);
+    // Kortet flyr ut i retningen man gjettet, og det neste kommer inn
+    const c=document.getElementById('hiloCard');
+    if(c){c.classList.add('fly');c.style.transform=`translateX(${guessedMore?120:-120}%) rotate(${guessedMore?12:-12}deg)`;}
+    setTimeout(()=>{
+      if(Q!==thisQ||done)return;
+      hiloIdx++;hiloBusy=false;
+      const fb=document.getElementById('feedback');if(fb)fb.style.display='none';
+      hiloShowRound(true);
+    },350);
+  },2400);
 }
 // ── FILM ──
 let movieAttempts=0,movieHintUsed=false,mvAcIdx=-1,mvAcMatches=[],movieWrong=[];
