@@ -277,7 +277,7 @@ body{
 <div class="halftime-overlay" id="halftimeOverlay">
   <div style="font-size:3rem">🏁</div>
   <div class="halftime-title">Halvtid!</div>
-  <div class="halftime-sub">Stillingen etter 10 spørsmål — poeng holdes hemmelig</div>
+  <div class="halftime-sub" id="halftimeSub">Stillingen etter 10 spørsmål — poeng holdes hemmelig</div>
   <div class="halftime-list" id="halftimeList"></div>
   <div style="color:rgba(255,255,255,.3);font-size:.82rem;margin-top:8px">Trykk "Fortsett" for å gjenoppta quizen</div>
 </div>
@@ -443,8 +443,8 @@ function renderTable(players, newName, maxQ){
     const streak=getStreak(rounds);
     const fireStr=streak>=3?`<span class="streak-fire" title="${streak} på rad!">🔥${streak>=5?streak:''}</span>`:'';
 
-    // Progress indicator
-    const totalQ=maxQ||20;
+    // Progress indicator — the player's page reports the quiz length (older entries fall back to the furthest player)
+    const totalQ=p.totalQ||maxQ||20;
     const curQ=p.currentQ||rounds.length;
     const progPct=Math.round(curQ/totalQ*100);
     const isDone=p.finished||curQ>=totalQ;
@@ -482,11 +482,13 @@ function renderTable(players, newName, maxQ){
 // ── HALFTIME OVERLAY ──
 function showHalftimeOverlay(players){
   const medals=['🥇','🥈','🥉'];
+  const half=players.find(p=>p.halftimeAt)?.halftimeAt||10; // reported by the player's page
+  document.getElementById('halftimeSub').textContent=`Stillingen etter ${half} spørsmål — poeng holdes hemmelig`;
   document.getElementById('halftimeList').innerHTML=players.map((p,i)=>`
     <div class="halftime-row" style="animation-delay:${i*0.12}s">
       <div class="halftime-medal">${medals[i]||'#'+(i+1)}</div>
       <div class="halftime-name">${esc(p.name)}</div>
-      <div class="halftime-progress">${p.currentQ||0}/10 spm</div>
+      <div class="halftime-progress">${Math.min(p.currentQ||0,half)}/${half} spm</div>
     </div>`).join('');
   document.getElementById('halftimeOverlay').classList.add('open');
 }

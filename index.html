@@ -595,7 +595,10 @@ const ALL_QUESTIONS=[
 
 const MAX_PLAYERS=15;
 const MAX_SCORE=ALL_QUESTIONS.reduce((s,q)=>s+(q.maxPts||0),0);
+const HALFTIME_AT=10; // players pause after this many questions when the host calls halftime
 window._MAX_SCORE=MAX_SCORE;
+window._TOTAL_Q=ALL_QUESTIONS.length;
+window._HALFTIME_AT=HALFTIME_AT;
 let leaderboard=[],playerName='',questionOrder=[],currentQIdx=0,currentScore=0,currentRounds=[],Q=null;
 let guesses=[],done=false,acIdx=-1,acMatches=[];
 
@@ -663,7 +666,7 @@ function nextQuestion(){
   currentQIdx++;
   if(currentQIdx>=ALL_QUESTIONS.length){ showResults(); return; }
   // Halftime check: after Q10, if gameState is 'halftime', pause
-  if(currentQIdx===10 && window.gameStateSeen==='halftime'){
+  if(currentQIdx===HALFTIME_AT && window.gameStateSeen==='halftime'){
     window._atHalftime=true;
     window._resumeQuiz=function(){ loadQuestion(); show('screen-question'); };
     window._showHalftime=function(){ showHalftimeScreen(); };
@@ -1455,17 +1458,24 @@ initNameScreen();
     set(ref(db, 'scores/' + myScoreKey), {
       name, score, maxScore, rounds,
       currentQ: rounds.length,   // finished
+      ...quizShape(),
       finished: true,
       timestamp: Date.now()
     }).then(() => console.log("Score submitted:", name, score))
       .catch(err => console.error("Firebase error:", err));
   };
 
+  // Quiz length and halftime point, so the leaderboard can show progress correctly
+  function quizShape() {
+    return { totalQ: window._TOTAL_Q || 0, halftimeAt: window._HALFTIME_AT || 10 };
+  }
+
   // ── UPDATE PROGRESS (called each question) ──
   window.updateProgressFirebase = function(name, currentQ, score, rounds) {
     const data = {
       name, score, currentQ, rounds,
       maxScore: window._MAX_SCORE || 131,
+      ...quizShape(),
       finished: false,
       timestamp: Date.now()
     };
@@ -1503,7 +1513,7 @@ initNameScreen();
       <div style="display:flex;align-items:center;gap:12px;background:var(--surf2);border-radius:10px;padding:10px 14px;">
         <span style="font-size:1.2rem;width:28px;text-align:center">${medals[i]||'#'+(i+1)}</span>
         <span style="font-weight:700;font-size:.95rem;flex:1">${p.name}</span>
-        <span style="font-size:.75rem;color:var(--muted);">${p.currentQ||0}/10 spm</span>
+        <span style="font-size:.75rem;color:var(--muted);">${Math.min(p.currentQ||0, window._HALFTIME_AT)}/${window._HALFTIME_AT} spm</span>
       </div>`).join('');
   };
 
