@@ -88,6 +88,7 @@ body{
 .ck.ok{background:rgba(79,255,176,.15);color:var(--accent);}
 .ck.no{background:rgba(255,95,109,.15);color:var(--red);}
 .ck.blank{opacity:.15;color:var(--muted);}
+.ck.skip{background:rgba(90,96,128,.2);color:var(--muted);}
 .td-score{text-align:right;font-family:var(--mono);font-size:.95rem;font-weight:700;color:var(--accent);white-space:nowrap;}
 .leader-row .td-score{color:var(--gold);}
 
@@ -310,10 +311,11 @@ function slugify(n){return n.toLowerCase().trim().replace(/\s+/g,'_').replace(/[
 let prevLeader=null, prevCount=0, numQ=0;
 const prevScores={};
 let currentGameState='waiting';
-let registeredPlayers=new Set(); // tracks unique names
+let registeredPlayers=new Set(); // unique names that have started answering
+let waitingPlayers=new Set();    // unique names in the waiting room
 
 function updateWaitCount(){
-  document.getElementById('waitPlayerCount').textContent=registeredPlayers.size;
+  document.getElementById('waitPlayerCount').textContent=new Set([...waitingPlayers,...registeredPlayers]).size;
 }
 
 // ── HOST ACTIONS ──
@@ -454,6 +456,7 @@ function renderTable(players, newName, maxQ){
     for(let q=0;q<numQ;q++){
       const r=rounds[q];
       if(!r) checks+=`<td class="td-q"><span class="ck blank">·</span></td>`;
+      else if(r.skipped) checks+=`<td class="td-q"><span class="ck skip" title="Hoppet over">–</span></td>`;
       else checks+=`<td class="td-q"><span class="ck ${r.correct?'ok':'no'}">${r.correct?'✓':'✗'}</span></td>`;
     }
     const sid=`ts_${slugify(p.name)}`;
@@ -523,11 +526,11 @@ onValue(ref(db,'gameState'), snapshot=>{
 });
 
 // ── WAITING PLAYERS LISTENER (updates innmeldt count) ──
-let waitingCount = 0;
 onValue(ref(db,'waiting'), snapshot=>{
   const data = snapshot.val();
-  waitingCount = data ? Object.keys(data).length : 0;
-  document.getElementById('waitPlayerCount').textContent = waitingCount;
+  waitingPlayers.clear();
+  if(data) Object.values(data).forEach(e=>{ if(e.name) waitingPlayers.add(e.name.toLowerCase().trim()); });
+  updateWaitCount();
 });
 
 // ── SCORES LISTENER ──

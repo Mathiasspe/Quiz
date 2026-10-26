@@ -185,6 +185,8 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:1
 .q-results{display:flex;flex-direction:column;gap:8px;margin:20px 0;}
 .q-result-row{display:flex;align-items:center;gap:12px;background:var(--surf2);border-radius:10px;padding:13px 16px;font-size:.88rem;}
 .qr-icon{font-size:1rem;flex-shrink:0;width:22px;text-align:center;}
+.btn-skip{display:block;margin:4px auto 0;background:transparent;border:none;color:var(--muted);font-family:var(--font);font-size:.85rem;font-weight:600;padding:10px 16px;cursor:pointer;touch-action:manipulation;transition:color .15s;}
+.btn-skip:hover{color:var(--text);}
 .qr-type{font-size:.68rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted);flex-shrink:0;width:52px;}
 .qr-label{flex:1;font-weight:600;line-height:1.3;}
 .qr-pts{font-family:var(--mono);font-size:.82rem;font-weight:700;color:var(--accent);white-space:nowrap;}
@@ -421,6 +423,7 @@ button:active:not(:disabled), .mc-opt:active:not(.disabled),
     </div>
     <div class="card" id="qCard"></div>
     <button class="btn btn-ghost" id="btnNext" onclick="nextQuestion()" style="display:none;margin-top:0;">Neste spørsmål →</button>
+    <button class="btn-skip" id="btnSkip" onclick="skipQuestion()">Hopp over spørsmålet (0 poeng) →</button>
   </div>
   <div class="screen" id="screen-results">
     <div class="card">
@@ -587,10 +590,13 @@ function startQuiz(){
   if(name.length<2){document.getElementById('nameInput').focus();return;}
   playerName=name;currentScore=0;currentRounds=[];currentQIdx=0;
   questionOrder=shuffle(ALL_QUESTIONS.map((_,i)=>i));
+  // New player on this device gets their own Firebase entry
+  if(typeof window.resetFirebasePlayer==='function')window.resetFirebasePlayer();
 
   // Check current game state — if waiting, show waiting screen
   if(typeof window.gameStateSeen === 'undefined' || window.gameStateSeen === 'waiting' || window.gameStateSeen === null) {
     window._waitingForStart = true;
+    if(typeof window.registerWaitingFirebase==='function')window.registerWaitingFirebase(playerName);
     window._startQuizNow = function(){ loadQuestion(); show('screen-question'); };
     document.getElementById('waitHeading').textContent = 'Hei, ' + playerName + '! 👋';
     document.getElementById('waitSub').textContent = 'Quizmaster starter snart — hold deg klar!';
@@ -610,6 +616,7 @@ function loadQuestion(){
   document.getElementById('hdrScore').textContent=currentScore;
   document.getElementById('pbar').style.width=`${(currentQIdx/ALL_QUESTIONS.length)*100}%`;
   document.getElementById('btnNext').style.display='none';
+  document.getElementById('btnSkip').style.display='block';
   const card=document.getElementById('qCard');card.innerHTML='';
   if(Q.type==='tradle')renderTradle(card);
   else if(Q.type==='typeB')renderTypeB(card);
@@ -634,6 +641,28 @@ function nextQuestion(){
   loadQuestion();
 }
 
+// Short label for a question in the results list and on the leaderboard
+function roundLabel(q){
+  switch(q.type){
+    case 'tradle':case 'movie':return q.answer;
+    case 'typeB':return q.options[q.answer];
+    case 'tf':return q.statement.slice(0,45)+'…';
+    case 'map':return q.regionLabel;
+    case 'logo':return q.brand;
+    case 'hilo':return `${q.items[0].country} → …`;
+    case 'size':return q.target.name;
+    default:return q.type;
+  }
+}
+// Skip without answering: 0 points (høyere/lavere keeps the points already earned in the chain)
+function skipQuestion(){
+  if(done)return;done=true;closeAC();
+  let pts=0;
+  if(Q.type==='hilo')pts=Math.round(Q.maxPts*(hiloScore/(Q.items.length-1)));
+  addScore(pts,{type:Q.type,label:roundLabel(Q),pts,maxPts:Q.maxPts,correct:false,skipped:true});
+  nextQuestion();
+}
+
 function showHalftimeScreen(){
   // Build ranking from Firebase scores (just show names in order, no pts)
   const el=document.getElementById('halftimeRanking');
@@ -645,7 +674,7 @@ function showHalftimeScreen(){
 
 // ── TRADLE ──
 function renderTradle(card){
-  card.innerHTML=`${typeBadge('Tradle-runde · opptil 10 poeng · 5 forsøk','var(--accent)')}<div class="q-text">Hvilket land har denne eksportprofilen?</div><div class="treemap-header"><div class="treemap-title">Gjett landet basert på eksportvarene!</div><div class="treemap-total">Total: ${Q.totalExports} &nbsp;·&nbsp; <span class="diff-badge diff-${Q.difficulty}">${Q.difficulty==='easy'?'lett':'middels'}</span></div></div><div class="export-map" id="exportMap"></div><div class="guesses" id="guesses"></div><div class="input-area"><div class="input-row"><input type="text" id="guessInput" placeholder="Begynn å skrive et land…" autocomplete="off" spellcheck="false" oninput="onInput()" onkeydown="onKey(event)"/><button class="btn-guess" id="guessBtn" onclick="submitTradle()">Gjett</button></div><div class="ac-list" id="acList"></div></div><div class="attempts-line">Forsøk <strong id="attNow">0</strong> av <strong>5</strong></div><div class="feedback" id="feedback"></div>`;
+  card.innerHTML=`${typeBadge('Tradle-runde · opptil 10 poeng · 5 forsøk','var(--accent)')}<div class="q-text">Hvilket land har denne eksportprofilen?</div><div class="treemap-header"><div class="treemap-title">Gjett landet basert på eksportvarene!</div><div class="treemap-total">Total: ${Q.totalExports} &nbsp;·&nbsp; <span class="diff-badge diff-${Q.difficulty}">${{easy:'lett',medium:'middels',hard:'vanskelig'}[Q.difficulty]||'middels'}</span></div></div><div class="export-map" id="exportMap"></div><div class="guesses" id="guesses"></div><div class="input-area"><div class="input-row"><input type="text" id="guessInput" placeholder="Begynn å skrive et land…" autocomplete="off" spellcheck="false" oninput="onInput()" onkeydown="onKey(event)"/><button class="btn-guess" id="guessBtn" onclick="submitTradle()">Gjett</button></div><div class="ac-list" id="acList"></div></div><div class="attempts-line">Forsøk <strong id="attNow">0</strong> av <strong>5</strong></div><div class="feedback" id="feedback"></div>`;
   requestAnimationFrame(buildTreemap);
   setTimeout(()=>document.getElementById('guessInput').focus(),80);
   if(Q.source){const sc=document.createElement('div');sc.className='source-link';sc.innerHTML=`📊 Kilde: <a href="${Q.source.url}" target="_blank" rel="noopener">${escHtml(Q.source.text)}</a>`;document.getElementById('qCard').appendChild(sc);}
@@ -854,8 +883,10 @@ function answerHilo(guessedMore){
   }
   updateHiloProgress();
   showFeedback(correct?`✅ Riktig! ${cur.display} — ${cur.funFact}`:`❌ Feil! Det var ${cur.display}. ${cur.funFact}`,correct,false);
-  // Move to next after delay
+  // Move to next after delay (unless the player skipped the question meanwhile)
+  const thisQ=Q;
   setTimeout(()=>{
+    if(Q!==thisQ||done)return;
     hiloIdx++;
     if(hiloIdx>=Q.items.length){
       done=true;
@@ -1070,13 +1101,17 @@ function addScore(pts,round){
   currentScore+=pts;currentRounds.push(round);document.getElementById('hdrScore').textContent=currentScore;
   // Push live score to Firebase immediately after each answer
   if(typeof window.updateProgressFirebase==='function'){
-    window.updateProgressFirebase(playerName, currentRounds.length, currentScore,
-      currentRounds.map(r=>({type:r.type,label:r.label,pts:r.pts,maxPts:r.maxPts,correct:r.correct})));
+    window.updateProgressFirebase(playerName, currentRounds.length, currentScore, roundsForFirebase());
   }
+}
+// Firebase rejects undefined values, so every field is set explicitly
+function roundsForFirebase(){
+  return currentRounds.map(r=>({type:r.type,label:r.label,pts:r.pts,maxPts:r.maxPts,correct:!!r.correct,skipped:!!r.skipped}));
 }
 function endRound(){
   const inp=document.getElementById('guessInput'),btn=document.getElementById('guessBtn');
   if(inp)inp.disabled=true;if(btn)btn.disabled=true;
+  document.getElementById('btnSkip').style.display='none';
   const nb=document.getElementById('btnNext');
   nb.textContent=currentQIdx>=ALL_QUESTIONS.length-1?'Se mine resultater →':'Neste spørsmål →';
   nb.style.display='block';
@@ -1117,14 +1152,14 @@ function showResults(){
   leaderboard.push({name:playerName,score:currentScore,rounds:currentRounds});
   // Auto-submit to Firebase
   if(typeof window.submitScoreToFirebase === 'function'){
-    window.submitScoreToFirebase(playerName, currentScore, MAX_SCORE, currentRounds.map(r=>({type:r.type,label:r.label,pts:r.pts,maxPts:r.maxPts,correct:r.correct})));
+    window.submitScoreToFirebase(playerName, currentScore, MAX_SCORE, roundsForFirebase());
   }
   leaderboard.sort((a,b)=>b.score-a.score);
   document.getElementById('resName').textContent=playerName;
   document.getElementById('resScore').textContent=currentScore;
   document.getElementById('resMax').textContent=`av ${MAX_SCORE} mulige poeng`;
   const tl={tradle:'TRADLE',typeB:'GRAF',tf:'S/U',map:'KART',logo:'LOGO',hilo:'H/L',movie:'FILM',size:'STR'};
-  document.getElementById('qResults').innerHTML=currentRounds.map(r=>`<div class="q-result-row"><span class="qr-icon">${r.correct?'✅':'❌'}</span><span class="qr-type">${tl[r.type]||r.type}</span><span class="qr-label">${escHtml(r.label)}</span><span class="qr-pts${r.pts===0?' zero':''}">${r.pts}/${r.maxPts}</span></div>`).join('');
+  document.getElementById('qResults').innerHTML=currentRounds.map(r=>`<div class="q-result-row"><span class="qr-icon">${r.skipped?'⏭️':r.correct?'✅':'❌'}</span><span class="qr-type">${tl[r.type]||r.type}</span><span class="qr-label">${escHtml(r.label)}</span><span class="qr-pts${r.pts===0?' zero':''}">${r.pts}/${r.maxPts}</span></div>`).join('');
   document.getElementById('resLb').innerHTML=buildLbHTML('Resultattavle',true);
   const nb=document.getElementById('newPlayerBtn');nb.disabled=leaderboard.length>=MAX_PLAYERS;nb.textContent=leaderboard.length>=MAX_PLAYERS?'Quiz full':'👤 Ny spiller';
   show('screen-results');
@@ -1188,12 +1223,19 @@ initNameScreen();
   let myScoreKey = null;   // Firebase key for this player's score entry
   window.gameStateSeen = null;
 
-  // ── SUBMIT SCORE (called on finish) ──
+  // ── NEW PLAYER ON THIS DEVICE (called from startQuiz) ──
+  window.resetFirebasePlayer = function() { myScoreKey = null; };
+
+  // ── REGISTER IN WAITING ROOM (shown as "X spillere innmeldt" on the leaderboard) ──
+  window.registerWaitingFirebase = function(name) {
+    set(push(ref(db, 'waiting')), { name, timestamp: Date.now() })
+      .catch(err => console.error("Firebase waiting error:", err));
+  };
+
+  // ── SUBMIT SCORE (called on finish) — marks this player's entry as finished ──
   window.submitScoreToFirebase = function(name, score, maxScore, rounds) {
-    const scoresRef = ref(db, 'scores');
-    const newScore = push(scoresRef);
-    myScoreKey = newScore.key;
-    set(newScore, {
+    if(!myScoreKey) myScoreKey = push(ref(db, 'scores')).key;
+    set(ref(db, 'scores/' + myScoreKey), {
       name, score, maxScore, rounds,
       currentQ: rounds.length,   // finished
       finished: true,
