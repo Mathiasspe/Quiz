@@ -2,7 +2,8 @@
 <html lang="no">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#0a0c10">
 <title>Gutta Quiz</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Fraunces:ital,wght@0,700;0,900;1,700&family=DM+Sans:wght@400;500;600;700&display=swap');
@@ -332,51 +333,84 @@ button:active:not(:disabled), .mc-opt:active:not(.disabled),
 }
 
 @media (max-width: 480px) {
-  /* Layout */
-  body { padding: 20px 12px 80px; }
+  /* Layout — tight edges so each question fits on an iPhone screen without scrolling */
+  body { padding: max(10px, env(safe-area-inset-top)) 10px calc(24px + env(safe-area-inset-bottom)); }
   #app { max-width: 100%; }
+  .progress-wrap { margin-bottom: 10px; }
 
   /* Card */
-  .card { padding: 20px 16px; border-radius: 12px; }
-
-  /* Logo/title */
-  .logo { font-size: 2.2rem; }
-  .logo-sub { margin-bottom: 24px; }
+  .card { padding: 16px 14px; border-radius: 12px; margin-bottom: 10px; }
+  .q-type-badge { margin-bottom: 6px; }
 
   /* Question text */
-  .q-text { font-size: 1.1rem; margin-bottom: 18px; }
+  .q-text { font-size: 1.05rem; margin-bottom: 12px; line-height: 1.35; }
+  .feedback { margin-top: 10px; padding: 10px 12px; font-size: .88rem; line-height: 1.5; }
+  .source-link { margin-top: 10px; padding-top: 8px; }
 
-  /* Tradle — guess rows: drop fixed widths, stack distance info */
+  /* Tradle — shorter treemap, compact guess rows */
+  .export-map { height: 190px; margin-bottom: 12px; }
+  .treemap-header { margin-bottom: 6px; }
+  .guesses { gap: 6px; margin-bottom: 10px; }
   .guess-row {
     grid-template-columns: 1fr auto auto;
     grid-template-rows: auto auto;
-    gap: 6px 8px;
+    gap: 4px 8px;
+    padding: 8px 12px;
   }
   .g-bar-wrap { grid-column: 1 / -1; margin-top: 2px; }
+  .attempts-line { margin-top: 6px; }
 
-  /* Tradle — bar chart labels shrink */
-  .bar-row { flex-direction: column; align-items: flex-start; gap: 4px; margin-bottom: 12px; }
-  .bar-label { width: 100%; text-align: left; font-size: .82rem; }
-  .bar-track { width: 100%; }
-  .bar-fill { padding-left: 8px; }
-  .bar-value { font-size: .75rem; }
+  /* Graph questions — label beside the bar instead of above it */
+  .chart-wrap { margin-bottom: 14px; }
+  .bar-row { gap: 8px; margin-bottom: 6px; }
+  .bar-label { width: 84px; font-size: .78rem; }
+  .bar-track { height: 24px; }
+  .bar-fill { padding-left: 6px; }
+  .bar-value { font-size: .72rem; }
 
-  /* T/F buttons: stack on very narrow */
+  /* T/F buttons */
   .tf-buttons { gap: 10px; }
   .tf-btn { padding: 18px 10px; font-size: 1.15rem; }
 
-  /* Map: increase tap area for options */
-  .mc-opt { padding: 14px 14px; }
+  /* Multiple choice — still a comfortable tap target, but shorter */
+  .mc-options { gap: 8px; }
+  .mc-opt { padding: 11px 12px; font-size: .92rem; }
+  .mc-key { width: 26px; height: 26px; }
+  /* Map answers are short, so two per row */
+  .mc-grid { display: grid; grid-template-columns: 1fr 1fr; }
+  .mc-grid .mc-opt { gap: 8px; }
+  .map-legend { margin-bottom: 8px; }
+  .map-outer { margin-bottom: 12px; }
 
-  /* Hilo buttons: taller touch targets */
-  .hilo-btn { padding: 20px 10px; font-size: .9rem; }
-  .hilo-btn-icon { font-size: 1.8rem; }
-  .hilo-ref-value { font-size: 1.25rem; }
-  .hilo-revealed-value { font-size: 1.5rem; }
+  /* Higher/lower — smaller reference panel and card */
+  .hilo-ref { padding: 10px 12px; margin-bottom: 10px; }
+  .hilo-ref-caption { margin-bottom: 4px; }
+  .hilo-ref-commodity { margin: 2px 0 8px; }
+  .hilo-ref-box { padding: 5px 8px; }
+  .hilo-ref-box-value { font-size: 1.05rem; }
+  .hilo-prompt { margin-bottom: 8px; }
+  .hilo-card { min-height: 0; padding: 18px 14px 14px; }
+  .hilo-card-flag { height: 44px; margin-bottom: 10px; }
+  .hilo-card-commodity { font-size: 1.4rem; }
+  .hilo-card-divider { margin: 10px 0; }
+  .hilo-card-value { padding: 10px 14px; font-size: 1.25rem; }
+  .hilo-card-actions { margin-top: 16px; }
+  .hilo-btn-circle { width: 54px; height: 54px; font-size: 1.4rem; }
+  .hilo-progress { margin-top: 10px; }
 
   /* Film poster: responsive size */
-  .movie-poster { width: 150px; height: 225px; }
-  .movie-emojis { font-size: 2rem; letter-spacing: 4px; margin-bottom: 14px; }
+  .movie-poster { width: 120px; height: 180px; }
+  .movie-poster-wrap { margin-bottom: 14px; }
+  .movie-emojis { font-size: 1.8rem; letter-spacing: 4px; margin: 0 0 12px; }
+  .movie-attempts { margin-bottom: 10px; }
+  .movie-hint-btn { margin-bottom: 10px; }
+
+  /* Size round */
+  .size-sub { margin: -8px 0 10px; font-size: .82rem; }
+  .size-bottom { padding-top: 10px; }
+
+  /* Logo round */
+  .logo-grid { gap: 8px; margin-bottom: 12px; }
 
   /* Autocomplete lists: larger touch items */
   .ac-item, .movie-ac-item { padding: 13px 16px; font-size: 1rem; }
@@ -395,11 +429,9 @@ button:active:not(:disabled), .mc-opt:active:not(.disabled),
 }
 
 @media (max-width: 360px) {
-  body { padding: 16px 10px 80px; }
-  .card { padding: 16px 12px; }
-  .logo { font-size: 1.9rem; }
-  .bar-label { font-size: .78rem; }
-  .movie-poster { width: 130px; height: 195px; }
+  .card { padding: 14px 12px; }
+  .bar-label { width: 72px; font-size: .74rem; }
+  .movie-poster { width: 110px; height: 165px; }
   .tf-btn { font-size: 1rem; padding: 16px 8px; }
 }
 </style>
@@ -415,8 +447,6 @@ button:active:not(:disabled), .mc-opt:active:not(.disabled),
   <span class="pb-sep"></span>
   <span class="pb-label" id="pbType" style="color:var(--yellow)">–</span>
 </div>
-  <div class="logo">Gutta<span> Quiz</span></div>
-  <div class="logo-sub">laget av Mathias</div>
   <div class="screen active" id="screen-name">
     <div class="card">
       <div class="q-type-badge"><div class="q-type-dot" style="background:var(--accent)"></div><span id="nameLabel">Spiller 1</span></div>
@@ -617,7 +647,7 @@ function initNameScreen(){
   const sb=document.getElementById('startBtn');sb.disabled=full;sb.textContent=full?`Quiz full`:'Start quiz →';
   document.getElementById('nameLb').innerHTML=leaderboard.length?buildLbHTML('Resultattavle'):'';
   show('screen-name');
-  if(!full)setTimeout(()=>document.getElementById('nameInput').focus(),80);
+  if(!full)setTimeout(()=>document.getElementById('nameInput')?.focus(),80);
 }
 function startQuiz(){
   if(leaderboard.length>=MAX_PLAYERS)return;
@@ -711,7 +741,7 @@ function showHalftimeScreen(){
 function renderTradle(card){
   card.innerHTML=`${typeBadge('Tradle-runde · opptil 10 poeng · 5 forsøk','var(--accent)')}<div class="q-text">Hvilket land har denne eksportprofilen?</div><div class="treemap-header"><div class="treemap-title">Gjett landet basert på eksportvarene!</div><div class="treemap-total">Total: ${Q.totalExports} &nbsp;·&nbsp; <span class="diff-badge diff-${Q.difficulty}">${{easy:'lett',medium:'middels',hard:'vanskelig'}[Q.difficulty]||'middels'}</span></div></div><div class="export-map" id="exportMap"></div><div class="guesses" id="guesses"></div><div class="input-area"><div class="input-row"><input type="text" id="guessInput" placeholder="Begynn å skrive et land…" autocomplete="off" spellcheck="false" oninput="onInput()" onkeydown="onKey(event)"/><button class="btn-guess" id="guessBtn" onclick="submitTradle()">Gjett</button></div><div class="ac-list" id="acList"></div></div><div class="attempts-line">Forsøk <strong id="attNow">0</strong> av <strong>5</strong></div><div class="feedback" id="feedback"></div>`;
   requestAnimationFrame(buildTreemap);
-  setTimeout(()=>document.getElementById('guessInput').focus(),80);
+  setTimeout(()=>document.getElementById('guessInput')?.focus(),80);
   if(Q.source){const sc=document.createElement('div');sc.className='source-link';sc.innerHTML=`📊 Kilde: <a href="${Q.source.url}" target="_blank" rel="noopener">${escHtml(Q.source.text)}</a>`;document.getElementById('qCard').appendChild(sc);}
 }
 function buildTreemap(){
@@ -815,7 +845,7 @@ function renderMap(card){
     <div class="map-outer">
       <svg viewBox="0 0 1009.67 665.96" xmlns="http://www.w3.org/2000/svg">${pathsHTML}</svg>
     </div>
-    <div class="mc-options">${optsH}</div>
+    <div class="mc-options mc-grid">${optsH}</div>
     <div class="feedback" id="feedback"></div>
     ${Q.source?`<div class="source-link" style="padding:0 24px 20px;margin-top:-4px;">📊 Kilde: <a href="${Q.source.url}" target="_blank" rel="noopener">${escHtml(Q.source.text)}</a></div>`:''}`;
 }
