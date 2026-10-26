@@ -244,20 +244,31 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:1
 .movie-ac-item em{color:var(--accent);font-style:normal;font-weight:700;}
 .movie-wrong-guess{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px;min-height:28px;}
 .movie-wrong-pill{background:rgba(255,95,109,.12);border:1px solid rgba(255,95,109,.3);color:var(--red);border-radius:99px;padding:3px 12px;font-size:.78rem;font-weight:600;}
-/* ── STØRRELSE ── */
-.size-legend{display:flex;flex-wrap:wrap;gap:8px 18px;margin-bottom:12px;font-size:.85rem;font-weight:600;}
-.size-legend span{display:inline-flex;align-items:center;gap:7px;}
-.size-legend i{width:12px;height:12px;border-radius:3px;flex-shrink:0;}
-.size-legend em{font-style:normal;font-weight:400;color:var(--muted);}
-.size-stage{background:var(--surf2);border:1px solid var(--border);border-radius:12px;overflow:hidden;margin-bottom:16px;}
-.size-stage svg{width:100%;height:auto;display:block;}
-.size-controls{display:flex;align-items:center;gap:12px;}
-.size-controls input[type=range]{flex:1;height:36px;accent-color:var(--yellow);cursor:pointer;touch-action:manipulation;}
-.size-controls input[type=range]:disabled{opacity:.4;cursor:default;}
-.size-step{width:44px;height:44px;flex-shrink:0;border-radius:10px;border:1px solid var(--border);background:var(--surf2);color:var(--text);font-size:1.3rem;font-weight:700;cursor:pointer;touch-action:manipulation;}
-.size-step:hover:not(:disabled){border-color:var(--yellow);color:var(--yellow);}
-.size-step:disabled{opacity:.35;cursor:default;}
-.size-hint{text-align:center;font-size:.78rem;color:var(--muted);margin-top:6px;}
+/* ── STØRRELSE (Size It Up) ── */
+.size-sub{color:var(--muted);font-size:.88rem;margin:-14px 0 16px;}
+.size-board{position:relative;margin-bottom:14px;}
+.size-board canvas{display:block;width:100%;height:auto;border-radius:12px;border:2px solid var(--border);touch-action:none;user-select:none;-webkit-user-select:none;}
+.size-zoom{position:absolute;right:10px;top:10px;display:flex;flex-direction:column;gap:6px;}
+.size-zoom button{width:36px;height:36px;border-radius:9px;border:1px solid rgba(255,255,255,.15);background:rgba(10,12,16,.75);color:var(--text);font-size:1.1rem;font-weight:700;line-height:1;cursor:pointer;touch-action:manipulation;}
+.size-zoom button:hover:not(:disabled){border-color:var(--accent);color:var(--accent);}
+.size-zoom button:disabled{opacity:.35;cursor:default;}
+.size-result{position:absolute;left:12px;top:10px;padding:8px 11px;border-radius:9px;background:rgba(10,12,16,.6);pointer-events:none;opacity:0;transform:translateY(-8px);transition:opacity .3s,transform .3s;text-shadow:0 2px 6px rgba(0,0,0,.8);}
+.size-result.show{opacity:1;transform:none;}
+.size-result-pts{font-family:var(--display);font-size:2.6rem;font-weight:900;line-height:1;color:var(--yellow);}
+.size-result-pts small{font-family:var(--font);font-size:.95rem;font-weight:700;color:var(--muted);margin-left:3px;}
+.size-result-lines{margin-top:6px;font-size:.8rem;line-height:1.5;color:var(--text);white-space:nowrap;}
+.size-result-lines b{font-variant-numeric:tabular-nums;}
+.size-result-lines .off{color:var(--muted);font-size:.74rem;}
+.size-bottom{display:flex;flex-wrap:wrap;align-items:center;gap:12px;border-top:1px solid var(--border);padding-top:14px;}
+.size-labels{flex:1;min-width:200px;font-size:.88rem;color:var(--muted);line-height:1.6;}
+.size-labels .ref{color:var(--blue);font-weight:700;}
+.size-labels .tgt{color:var(--red);font-weight:700;}
+.size-bottom .btn{width:auto;min-width:140px;margin-top:0;}
+@media (max-width:480px){
+  .size-result-pts{font-size:2rem;}
+  .size-result-lines{font-size:.72rem;}
+  .size-bottom .btn{width:100%;}
+}
 
 /* ── DEV PREVIEW NAV ── */
 #previewBar{position:fixed;bottom:20px;right:20px;z-index:9999;display:none;background:var(--surf2);border:1px solid var(--accent);border-radius:12px;padding:10px 14px;display:none;align-items:center;gap:10px;box-shadow:0 8px 24px rgba(0,0,0,.6);}
@@ -541,24 +552,24 @@ const ALL_QUESTIONS=[
   {type:"map",maxPts:6,mapQ:2},
   {type:"logo",maxPts:5,brand:"Pepsi",logoKey:"pepsi",correctIdx:1,question:"Hvilket av disse er den ekte Pepsi-logoen?",funFact:"Pepsi-logoen fra 2008 har blå øverst til venstre og rød nederst til høyre — med den karakteristiske hvite S-kurven i midten. Logoen er bevisst litt asymmetrisk."},
   {type:"logo",maxPts:5,brand:"LG",logoKey:"lg",correctIdx:2,question:"Hvilket av disse er den ekte LG-logoen?",funFact:"LG-logoen er et stilisert ansikt: C-buen er konturen, L er nese og munn, og den lille prikken er øyet — plassert øverst til høyre inne i sirkelen. 👁️"},
-  // Størrelse: ref er tegnet i riktig skala, spilleren justerer target. shape: "v" (høyde), "h" (lengde) eller "circle" (diameter).
-  // size er i samme enhet (unit) for begge. Glideren går fra minRatio til maxRatio × referansen (standard 0,1–10).
-  {type:"size",maxPts:6,shape:"v",unit:"m",
+  // Størrelse (som Magnitudle «Size It Up»): referansen står i skala, spilleren flytter og skalerer sin silhuett.
+  // Silhuettene lages av emojien. size er i samme enhet (unit) for begge. axis: "height" (høyde) eller "length" (lengde).
+  {type:"size",maxPts:6,axis:"height",unit:"m",
    ref:{name:"Eiffeltårnet",emoji:"🗼",size:330},
-   target:{name:"Preikestolen (høyde over Lysefjorden)",emoji:"⛰️",size:604},
+   target:{name:"Preikestolen",sub:"(høyde over Lysefjorden)",emoji:"⛰️",size:604},
    funFact:"Preikestolen ruver 604 meter over Lysefjorden — nesten dobbelt så høyt som Eiffeltårnet. 🇳🇴"},
-  {type:"size",maxPts:6,shape:"circle",unit:"km",
-   ref:{name:"Jorda",emoji:"🌍",size:12742},
-   target:{name:"Månen",emoji:"🌕",size:3474},
+  {type:"size",maxPts:6,axis:"height",unit:"km",
+   ref:{name:"Jorda",sub:"(diameter)",emoji:"🌍",size:12742},
+   target:{name:"Månen",sub:"(diameter)",emoji:"🌕",size:3474},
    funFact:"Månens diameter er bare 27% av jordas. Likevel er den uvanlig stor for en måne sammenlignet med planeten den går rundt. 🌕"},
-  {type:"size",maxPts:6,shape:"v",unit:"m",
-   ref:{name:"Norsk mann (snitt)",emoji:"🧍",size:1.8},
-   target:{name:"Sjiraff (voksen hann)",emoji:"🦒",size:5.5},
-   funFact:"En voksen sjiraffhann kan bli rundt 5,5 meter høy — tre ganger så høy som en gjennomsnittlig nordmann. Halsen alene er nesten 2 meter. 🦒"},
-  {type:"size",maxPts:6,shape:"h",unit:"m",
-   ref:{name:"Bybuss",emoji:"🚌",size:12},
-   target:{name:"Blåhval (de største)",emoji:"🐋",size:30},
-   funFact:"De største blåhvalene blir rundt 30 meter lange — like lange som to og en halv bybusser. Det er det største dyret som noen gang har levd. 🐋"}
+  {type:"size",maxPts:6,axis:"height",unit:"m",
+   ref:{name:"Norsk mann",sub:"(snitt)",emoji:"🧍",size:1.8},
+   target:{name:"Afrikansk elefant",sub:"(voksen hann, skulderhøyde)",emoji:"🐘",size:3.2},
+   funFact:"En voksen afrikansk elefanthann er rundt 3,2 meter høy over skulderen — og veier like mye som seks-sju personbiler. 🐘"},
+  {type:"size",maxPts:6,axis:"length",unit:"mm",
+   ref:{name:"Norsk enkrone",sub:"(diameter)",emoji:"🪙",size:21},
+   target:{name:"Rød skogmaur",sub:"(arbeider)",emoji:"🐜",size:7},
+   funFact:"En rød skogmaur er rundt 7 mm lang — bare en tredjedel av en enkrone. Likevel kan en stor maurtue huse flere hundre tusen av dem. 🐜"}
 ];
 
 const MAX_PLAYERS=15;
@@ -1011,89 +1022,231 @@ function submitMovie(){
     }
   }
 }
-// ── STØRRELSE ──
-// Referansen tegnes i skala, spilleren skalerer target med glideren (logaritmisk).
-// Visningen zoomer ut automatisk så det største objektet alltid får plass.
-let sizeRatio=1;
-function sizeRange(){return[Math.log(Q.minRatio||0.1),Math.log(Q.maxRatio||10)];}
-function sliderToRatio(v){const[lo,hi]=sizeRange();return Math.exp(lo+(hi-lo)*v/1000);}
-function ratioToSlider(r){const[lo,hi]=sizeRange();return Math.round((Math.log(r)-lo)/(hi-lo)*1000);}
-function fmtSize(v,exact){return v.toLocaleString('nb-NO',exact?{}:{maximumSignificantDigits:3})+' '+Q.unit;}
-function renderSize(card){
-  sizeRatio=1;
-  const verb={v:'høy',h:'lang',circle:'stor (diameter)'}[Q.shape]||'stor';
-  card.innerHTML=`${typeBadge(`Størrelse · ${Q.maxPts} poeng`,'var(--blue)')}
-    <div class="q-text">${escHtml(Q.question||`Hvor ${verb} er ${Q.target.name} sammenlignet med ${Q.ref.name}?`)}</div>
-    <div class="size-legend">
-      <span><i style="background:var(--blue)"></i>${Q.ref.emoji} ${escHtml(Q.ref.name)} <em>(i skala)</em></span>
-      <span><i style="background:var(--yellow)"></i>${Q.target.emoji} ${escHtml(Q.target.name)} <em>(juster)</em></span>
-    </div>
-    <div class="size-stage"><svg id="sizeSvg" viewBox="0 0 600 300" xmlns="http://www.w3.org/2000/svg"></svg></div>
-    <div class="size-controls">
-      <button class="size-step" id="sizeMinus" onclick="stepSize(-1)">−</button>
-      <input type="range" id="sizeSlider" min="0" max="1000" value="${ratioToSlider(1)}" oninput="onSizeSlide()"/>
-      <button class="size-step" id="sizePlus" onclick="stepSize(1)">+</button>
-    </div>
-    <div class="size-hint">Dra i glideren til den gule har riktig størrelse</div>
-    <button class="btn" id="sizeLockBtn" onclick="lockSize()">Lås svar</button>
-    <div class="feedback" id="feedback"></div>`;
-  drawSize(false);
-}
-function onSizeSlide(){if(done)return;sizeRatio=sliderToRatio(+document.getElementById('sizeSlider').value);drawSize(false);}
-function stepSize(dir){
-  if(done)return;const sl=document.getElementById('sizeSlider');
-  sl.value=Math.max(0,Math.min(1000,+sl.value+dir*10));onSizeSlide();
-}
-function drawSize(reveal){
-  const svg=document.getElementById('sizeSvg');if(!svg)return;
-  const ref=Q.ref.size,guess=ref*sizeRatio,act=Q.target.size;
-  const tgtMax=reveal?Math.max(guess,act):guess,big=Math.max(ref,tgtMax);
-  const REF='var(--blue)',TGT='var(--yellow)',ACT='var(--accent)';
-  const shapeStyle=(c,outline)=>outline?`fill:none;stroke:${c};stroke-width:3;stroke-dasharray:8 5`:`fill:${c};fill-opacity:.85`;
-  const rect=(x,y,w,h,c,o)=>`<rect x="${x}" y="${y}" width="${Math.max(w,1.5)}" height="${Math.max(h,1.5)}" rx="3" style="${shapeStyle(c,o)}"/>`;
-  const circ=(cx,cy,r,c,o)=>`<circle cx="${cx}" cy="${cy}" r="${Math.max(r,1)}" style="${shapeStyle(c,o)}"/>`;
-  const emoji=(x,y,e)=>`<text x="${x}" y="${y}" font-size="26" text-anchor="middle" dominant-baseline="central">${e}</text>`;
-  let out='';
-  if(Q.shape==='h'){
-    // Lengde: referansen øverst, target under, begge fra samme startlinje
-    const s=490/big,x0=70;
-    out+=emoji(35,95,Q.ref.emoji)+rect(x0,75,ref*s,40,REF);
-    out+=rect(x0,185,guess*s,40,TGT);
-    if(reveal)out+=rect(x0,185,act*s,40,ACT,true);
-    out+=emoji(35,205,Q.target.emoji);
-  }else if(Q.shape==='circle'){
-    // Diameter: to sirkler side om side på samme grunnlinje
-    const base=272,gap=40,s=Math.min(225/big,520/(ref+tgtMax));
-    const dR=ref*s,dT=tgtMax*s,x0=(600-(dR+gap+dT))/2,cxR=x0+dR/2,cxT=x0+dR+gap+dT/2;
-    out+=circ(cxR,base-dR/2,dR/2,REF)+emoji(cxR,base-dR-18,Q.ref.emoji);
-    out+=circ(cxT,base-guess*s/2,guess*s/2,TGT);
-    if(reveal)out+=circ(cxT,base-act*s/2,act*s/2,ACT,true);
-    out+=emoji(cxT,base-dT-18,Q.target.emoji);
-  }else{
-    // Høyde: to søyler på samme bakkelinje
-    const base=280,s=228/big;
-    out+=`<line x1="40" y1="${base}" x2="560" y2="${base}" style="stroke:var(--border);stroke-width:2"/>`;
-    out+=rect(150,base-ref*s,100,ref*s,REF)+emoji(200,base-ref*s-18,Q.ref.emoji);
-    out+=rect(350,base-guess*s,100,guess*s,TGT);
-    if(reveal)out+=rect(350,base-act*s,100,act*s,ACT,true);
-    out+=emoji(400,base-tgtMax*s-18,Q.target.emoji);
+// ── STØRRELSE (Size It Up) ──
+// Brettet er 840×510 internt med bakkelinje på y=430. Referansen står fast i skala til venstre;
+// spilleren flytter og skalerer sin silhuett. Målet i virkeligheten holdes skjult til man låser svaret.
+// Visningen har en sceneskala rundt (REF_X, GROUND) pluss forskyvning — zoom endrer bare sceneskalaen.
+const SZ={W:840,H:510,GROUND:430,REF_X:30,OBJ_X:285,MIN_S:.04,MAX_S:12};
+// Feilfaktor (størst/minst av svar og fasit) → poeng av 100, interpolert logaritmisk
+const SZ_ANCHORS=[[1,100],[1.06,100],[1.12,90],[1.2,80],[1.35,65],[1.5,53],[2,33],[3,14],[5,0]];
+let SZS=null; // tilstand for gjeldende størrelsesspørsmål
+const szSilCache={};
+function szScore(f){
+  if(!Number.isFinite(f)||f>=SZ_ANCHORS.at(-1)[0])return 0;
+  if(f<=SZ_ANCHORS[1][0])return 100;
+  for(let i=2;i<SZ_ANCHORS.length;i++){
+    const[f0,s0]=SZ_ANCHORS[i-1],[f1,s1]=SZ_ANCHORS[i];
+    if(f<=f1)return Math.max(0,Math.min(99,Math.round(s0+(s1-s0)*(Math.log(f)-Math.log(f0))/(Math.log(f1)-Math.log(f0)))));
   }
-  svg.innerHTML=out;
+  return 0;
 }
+// Tegner emojien og klipper den til de synlige pikslene, så målene blir riktige uansett plattform
+function szSilhouette(emoji){
+  if(szSilCache[emoji])return szSilCache[emoji];
+  const S=320,c=document.createElement('canvas');c.width=c.height=S;
+  const x=c.getContext('2d',{willReadFrequently:true});
+  x.font='220px "Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji","Segoe UI Symbol",sans-serif';
+  x.textAlign='center';x.textBaseline='middle';x.fillText(emoji,S/2,S/2+10);
+  const d=x.getImageData(0,0,S,S).data;let l=S,r=-1,t=S,b=-1;
+  for(let y=0;y<S;y++)for(let i=0;i<S;i++)if(d[(y*S+i)*4+3]>40){if(i<l)l=i;if(i>r)r=i;if(y<t)t=y;if(y>b)b=y;}
+  if(r<0){l=t=0;r=b=S-1;}
+  const w=r-l+1,h=b-t+1,crop=document.createElement('canvas');crop.width=w;crop.height=h;
+  crop.getContext('2d').drawImage(c,l,t,w,h,0,0,w,h);
+  return szSilCache[emoji]={img:crop,nW:w,nH:h,tinted:{}};
+}
+function szTinted(sil,color){
+  if(sil.tinted[color])return sil.tinted[color];
+  const c=document.createElement('canvas');c.width=sil.nW;c.height=sil.nH;
+  const x=c.getContext('2d');x.drawImage(sil.img,0,0);
+  x.globalCompositeOperation='source-in';x.fillStyle=color;x.fillRect(0,0,c.width,c.height);
+  return sil.tinted[color]=c;
+}
+function szDim(sil){return SZS.horiz?sil.nW:sil.nH;}
+function szName(o){return o.sub?`${o.name} ${o.sub}`:o.name;}
+function fmtSize(v,exact){return v.toLocaleString('nb-NO',exact?{}:{maximumSignificantDigits:3})+' '+Q.unit;}
+function szToScreen(wx,wy){const v=SZS.view;return{x:SZ.REF_X+(wx-SZ.REF_X)*v.s+v.ox,y:SZ.GROUND+(wy-SZ.GROUND)*v.s+v.oy};}
+function szToWorldX(sx){const v=SZS.view;return SZ.REF_X+(sx-v.ox-SZ.REF_X)/v.s;}
+function szRefBox(){const s=SZS.refScale;return{l:SZ.REF_X,t:SZ.GROUND-SZS.ref.nH*s,r:SZ.REF_X+SZS.ref.nW*s,b:SZ.GROUND};}
+function szObjBox(scale){const o=SZS.obj,sc=scale??o.scale,w=SZS.tgt.nW*sc,h=SZS.tgt.nH*sc;return{l:o.x,t:o.y-h,r:o.x+w,b:o.y,w,h};}
+function szMaxZoom(){return Math.min(SZ.MAX_S,380/Math.max(1,SZ.GROUND-szRefBox().t));}
+
+function renderSize(card){
+  const ref=szSilhouette(Q.ref.emoji),tgt=szSilhouette(Q.target.emoji);
+  SZS={horiz:Q.axis==='length',ref,tgt,view:{s:1,ox:0,oy:0},phase:'playing',pointers:new Map(),drag:null};
+  SZS.refScale=Math.min(132/ref.nH,200/ref.nW);                 // referansen tegnes alltid like stor
+  SZS.ppu=szDim(ref)*SZS.refScale/Q.ref.size;                    // verdens-piksler per enhet
+  SZS.correctScale=Q.target.size*SZS.ppu/szDim(tgt);
+  SZS.obj={x:SZ.OBJ_X,y:SZ.GROUND,scale:szDim(ref)*SZS.refScale/szDim(tgt)}; // starter like stor som referansen
+  const rb=szRefBox(),ob=szObjBox();
+  SZS.view.s=Math.max(SZ.MIN_S,Math.min(1,782/Math.max(1,Math.max(rb.r,ob.r)-SZ.REF_X),402/Math.max(1,SZ.GROUND-Math.min(rb.t,ob.t))));
+  const dim=SZS.horiz?'lengden':'høyden';
+  const icon=sign=>`<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4M8 11h6${sign>0?'M11 8v6':''}"/></svg>`;
+  card.innerHTML=`${typeBadge(`Størrelse · ${Q.maxPts} poeng`,'var(--blue)')}
+    <div class="q-text">${escHtml(Q.question||'Tilpass silhuetten til virkelig størrelse.')}</div>
+    <div class="size-sub">Dra for å flytte · dra i hjørnet eller klyp med to fingre for å endre størrelse</div>
+    <div class="size-board">
+      <canvas id="szCanvas" width="${SZ.W}" height="${SZ.H}" aria-label="Størrelsesbrett"></canvas>
+      <div class="size-zoom" id="szZoom">
+        <button id="szZoomIn" onclick="szZoom(1)" title="Zoom inn" aria-label="Zoom inn">${icon(1)}</button>
+        <button id="szZoomOut" onclick="szZoom(-1)" title="Zoom ut for mer plass" aria-label="Zoom ut for mer plass">${icon(-1)}</button>
+      </div>
+      <div class="size-result" id="szResult"></div>
+    </div>
+    <div class="size-bottom">
+      <div class="size-labels">
+        Referanse: <span class="ref">${escHtml(szName(Q.ref))}</span> (${dim} i skala)<br>
+        <span class="tgt">${escHtml(szName(Q.target))}</span> (juster ${dim})
+      </div>
+      <button class="btn" id="szLock" onclick="lockSize()">Lås svar</button>
+    </div>
+    <div class="feedback" id="feedback"></div>`;
+  szBindPointer(document.getElementById('szCanvas'));
+  szUpdateZoomBtns();szDraw();
+}
+
+function szDraw(){
+  const cv=document.getElementById('szCanvas');if(!cv||!SZS)return;
+  const g=cv.getContext('2d'),v=SZS.view,css=getComputedStyle(document.documentElement);
+  const refColor=css.getPropertyValue('--blue').trim()||'#5eb8ff',playerColor=css.getPropertyValue('--red').trim()||'#ff5f6d';
+  g.setTransform(1,0,0,1,0,0);
+  const bg=g.createLinearGradient(0,0,0,SZ.H);bg.addColorStop(0,'#0d1220');bg.addColorStop(1,'#0a0e1a');
+  g.fillStyle=bg;g.fillRect(0,0,SZ.W,SZ.H);
+  g.strokeStyle='rgba(255,255,255,.035)';g.lineWidth=1;
+  for(let x=0;x<SZ.W;x+=60){g.beginPath();g.moveTo(x+.5,0);g.lineTo(x+.5,SZ.H);g.stroke();}
+  for(let y=0;y<SZ.H;y+=60){g.beginPath();g.moveTo(0,y+.5);g.lineTo(SZ.W,y+.5);g.stroke();}
+  // Bakkelinje i skjermkoordinater
+  const gy=szToScreen(0,SZ.GROUND).y,gl=g.createLinearGradient(0,0,SZ.W,0);
+  gl.addColorStop(0,'transparent');gl.addColorStop(.15,'rgba(100,140,255,.4)');gl.addColorStop(.85,'rgba(100,140,255,.4)');gl.addColorStop(1,'transparent');
+  g.strokeStyle=gl;g.lineWidth=2;g.beginPath();g.moveTo(0,gy);g.lineTo(SZ.W,gy);g.stroke();
+  const sh=g.createLinearGradient(0,gy,0,gy+30);sh.addColorStop(0,'rgba(100,140,255,.08)');sh.addColorStop(1,'transparent');
+  g.fillStyle=sh;g.fillRect(0,gy,SZ.W,30);
+  // Verden
+  g.save();g.translate(v.ox,v.oy);g.translate(SZ.REF_X,SZ.GROUND);g.scale(v.s,v.s);g.translate(-SZ.REF_X,-SZ.GROUND);
+  const rb=szRefBox();g.drawImage(szTinted(SZS.ref,refColor),rb.l,rb.t,rb.r-rb.l,rb.b-rb.t);
+  g.strokeStyle='rgba(94,184,255,.4)';g.lineWidth=1.25/v.s;g.setLineDash([3/v.s,3/v.s]);g.beginPath();
+  if(SZS.horiz){const y=rb.t-10/v.s;g.moveTo(rb.l,y);g.lineTo(rb.r,y);}else{const x=rb.r+10/v.s;g.moveTo(x,rb.b);g.lineTo(x,rb.t);}
+  g.stroke();g.setLineDash([]);
+  const ob=szObjBox();g.drawImage(szTinted(SZS.tgt,playerColor),ob.l,ob.t,ob.w,ob.h);
+  if(SZS.phase!=='playing'){ // fasit som grå skygge, forankret i samme hjørne
+    const cb=szObjBox(SZS.correctScale);g.globalAlpha=.5;g.drawImage(szTinted(SZS.tgt,'#8aa0b8'),cb.l,cb.t,cb.w,cb.h);g.globalAlpha=1;
+  }
+  g.restore();
+  // Håndtak for størrelse øverst til høyre på silhuetten
+  if(SZS.phase==='playing'){
+    const p=szToScreen(ob.r,ob.t),hs=szHandleSize(cv),r=hs*.25;
+    g.fillStyle='rgba(15,20,40,.85)';g.beginPath();g.roundRect(p.x-hs/2,p.y-hs/2,hs,hs,r);g.fill();
+    g.strokeStyle='rgba(200,220,255,.9)';g.lineWidth=hs/15;g.lineCap='round';g.lineJoin='round';
+    const a=hs*.28;g.beginPath();
+    g.moveTo(p.x-a,p.y+a);g.lineTo(p.x+a,p.y-a);
+    g.moveTo(p.x+a*.2,p.y-a);g.lineTo(p.x+a,p.y-a);g.lineTo(p.x+a,p.y-a*.2);
+    g.moveTo(p.x-a,p.y+a*.2);g.lineTo(p.x-a,p.y+a);g.lineTo(p.x-a*.2,p.y+a);
+    g.stroke();
+  }
+}
+// Håndtaket skal være stort nok til en finger også når brettet er nedskalert på mobil
+function szHandleSize(cv){return Math.min(60,Math.max(28,28*SZ.W/cv.getBoundingClientRect().width));}
+
+function szBindPointer(cv){
+  const pos=e=>{const r=cv.getBoundingClientRect();return{x:(e.clientX-r.left)*SZ.W/r.width,y:(e.clientY-r.top)*SZ.H/r.height};};
+  const hit=p=>{
+    const ob=szObjBox(),tl=szToScreen(ob.l,ob.t),br=szToScreen(ob.r,ob.b);
+    if(Math.hypot(p.x-br.x,p.y-tl.y)<=szHandleSize(cv)*.75)return{mode:'resize',ax:tl.x,ay:br.y};
+    if(p.x>=tl.x&&p.x<=br.x&&p.y>=tl.y&&p.y<=br.y)return{mode:'move'};
+    return null;
+  };
+  const playing=()=>SZS&&SZS.phase==='playing'&&!done;
+  cv.addEventListener('pointerdown',e=>{
+    if(!playing())return;
+    const p=pos(e);SZS.pointers.set(e.pointerId,p);
+    if(SZS.pointers.size===2){
+      const[a,b]=[...SZS.pointers.values()];
+      SZS.drag={mode:'pinch',d0:Math.max(1,Math.hypot(a.x-b.x,a.y-b.y)),s0:SZS.obj.scale,cx:SZS.obj.x+SZS.tgt.nW*SZS.obj.scale/2};
+    }else if(SZS.pointers.size===1){
+      const h=hit(p);if(!h)return;
+      SZS.drag=h.mode==='resize'
+        ?{mode:'resize',ax:h.ax,ay:h.ay,d0:Math.max(1,Math.hypot(p.x-h.ax,p.y-h.ay)),s0:SZS.obj.scale}
+        :{mode:'move',x0:p.x,y0:p.y,ox:SZS.obj.x,oy:SZS.obj.y};
+    }
+    try{cv.setPointerCapture(e.pointerId);}catch{}
+    e.preventDefault();
+  });
+  cv.addEventListener('pointermove',e=>{
+    if(!playing())return;
+    const p=pos(e);
+    if(SZS.pointers.has(e.pointerId))SZS.pointers.set(e.pointerId,p);
+    const d=SZS.drag;
+    if(!d){if(e.pointerType==='mouse'){const h=hit(p);cv.style.cursor=h?(h.mode==='resize'?'nwse-resize':'grab'):'default';}return;}
+    if(d.mode==='pinch'){
+      if(SZS.pointers.size<2)return;
+      const[a,b]=[...SZS.pointers.values()];
+      SZS.obj.scale=Math.max(.002,d.s0*Math.hypot(a.x-b.x,a.y-b.y)/d.d0);
+      SZS.obj.x=d.cx-SZS.tgt.nW*SZS.obj.scale/2;
+    }else if(d.mode==='move'){
+      SZS.obj.x=d.ox+(p.x-d.x0)/SZS.view.s;SZS.obj.y=d.oy+(p.y-d.y0)/SZS.view.s;cv.style.cursor='grabbing';
+    }else{
+      SZS.obj.scale=Math.max(.002,d.s0*Math.hypot(p.x-d.ax,p.y-d.ay)/d.d0);
+    }
+    szDraw();
+  });
+  const end=e=>{
+    if(!SZS)return;SZS.pointers.delete(e.pointerId);
+    if(SZS.drag?.mode==='pinch'&&SZS.pointers.size===1){SZS.drag=null;return;}
+    if(SZS.pointers.size===0){SZS.drag=null;cv.style.cursor='default';}
+  };
+  cv.addEventListener('pointerup',end);cv.addEventListener('pointercancel',end);cv.addEventListener('lostpointercapture',end);
+}
+
+function szZoom(dir){
+  if(!SZS||SZS.phase!=='playing'||done)return;
+  const v=SZS.view;
+  v.s=dir>0?Math.min(szMaxZoom(),v.s/.75):Math.max(SZ.MIN_S,v.s*.75);
+  // Hold silhuetten synlig: legg den til høyre for referansen, eller midtstilt hvis den er for stor
+  const refW=SZS.ref.nW*SZS.refScale*v.s,objW=SZS.tgt.nW*SZS.obj.scale*v.s;
+  const left=objW<=800?Math.max(20,Math.min(SZ.REF_X+refW+40,SZ.W-objW-20)):(SZ.W-objW)/2;
+  SZS.obj.x=szToWorldX(left);SZS.obj.y=SZ.GROUND;
+  szUpdateZoomBtns();szDraw();
+}
+function szUpdateZoomBtns(){
+  const zi=document.getElementById('szZoomIn'),zo=document.getElementById('szZoomOut');
+  if(zi)zi.disabled=SZS.view.s>=szMaxZoom()-1e-9;if(zo)zo.disabled=SZS.view.s<=SZ.MIN_S+1e-9;
+}
+// Zoomer jevnt så referanse, svar og fasit alle får plass
+function szAnimateFit(onDone){
+  const st=SZS,v=st.view,boxes=[szRefBox(),szObjBox(),szObjBox(st.correctScale)];
+  const l=Math.min(...boxes.map(b=>b.l)),r=Math.max(...boxes.map(b=>b.r)),t=Math.min(...boxes.map(b=>b.t)),b=Math.max(...boxes.map(b=>b.b));
+  const s=Math.max(SZ.MIN_S,Math.min(SZ.MAX_S,560/Math.max(1,r-l),330/Math.max(1,b-t)));
+  const cx=(l+r)/2,cy=(t+b)/2;
+  const to={s,ox:490-(SZ.REF_X+(cx-SZ.REF_X)*s),oy:255-(SZ.GROUND+(cy-SZ.GROUND)*s)},from={...v};
+  const reduce=window.matchMedia('(prefers-reduced-motion: reduce)').matches,dur=reduce?0:900,t0=performance.now();
+  const step=now=>{
+    if(SZS!==st||!document.getElementById('szCanvas'))return;
+    const k=dur?Math.min(1,(now-t0)/dur):1,e=1-Math.pow(1-k,3);
+    v.s=from.s+(to.s-from.s)*e;v.ox=from.ox+(to.ox-from.ox)*e;v.oy=from.oy+(to.oy-from.oy)*e;
+    szDraw();
+    if(k<1)requestAnimationFrame(step);else onDone&&onDone();
+  };
+  requestAnimationFrame(step);
+}
+
 function lockSize(){
-  if(done)return;done=true;
-  ['sizeSlider','sizeMinus','sizePlus'].forEach(id=>{const el=document.getElementById(id);if(el)el.disabled=true;});
-  const lockBtn=document.getElementById('sizeLockBtn');if(lockBtn)lockBtn.style.display='none';
-  const actRatio=Q.target.size/Q.ref.size;
-  // Feil måles som forhold: innenfor 5% gir fullt hus, 2× feil (for stor eller for liten) gir 0
-  const err=Math.abs(Math.log(sizeRatio/actRatio)),full=Math.log(1.05),zero=Math.log(2);
-  const pts=Math.round(Q.maxPts*Math.max(0,Math.min(1,1-(err-full)/(zero-full))));
-  const correct=err<=Math.log(1.2);
-  const off=Math.round((sizeRatio/actRatio-1)*100);
-  const offStr=Math.abs(off)<=1?'så å si perfekt':off>0?`${off}% for stor`:`${-off}% for liten`;
-  drawSize(true);
-  addScore(pts,{type:'size',label:Q.target.name,pts,maxPts:Q.maxPts,correct});
-  showFeedback(`${pts>0?'🎯':'😬'} Ditt svar: ${fmtSize(Q.ref.size*sizeRatio)} (${offStr}). Riktig: <strong>${fmtSize(Q.target.size,true)}</strong> — vist med stiplet grønn strek. +${pts} poeng. ${escHtml(Q.funFact||'')}`,pts>0);
+  if(done||!SZS||SZS.phase!=='playing')return;
+  done=true;SZS.phase='result';SZS.drag=null;SZS.pointers.clear();
+  const guessDim=szDim(SZS.tgt)*SZS.obj.scale,actDim=Q.target.size*SZS.ppu;
+  const guess=guessDim/SZS.ppu,act=Q.target.size;
+  const score100=szScore(Math.max(guess/act,act/guess));
+  const pts=Math.round(Q.maxPts*score100/100);
+  const offBy=Math.round(Math.abs(guessDim-actDim)/actDim*100);
+  ['szLock','szZoom'].forEach(id=>{const el=document.getElementById(id);if(el)el.style.display='none';});
+  document.getElementById('szCanvas').style.cursor='default';
+  addScore(pts,{type:'size',label:Q.target.name,pts,maxPts:Q.maxPts,correct:score100>=80});
+  szDraw();
+  szAnimateFit(()=>{
+    const res=document.getElementById('szResult');if(!res)return;
+    res.innerHTML=`<div class="size-result-pts">${pts}<small>/ ${Q.maxPts}</small></div>
+      <div class="size-result-lines">Ditt svar: <b>${fmtSize(guess)}</b><br>Riktig: <b>${fmtSize(act,true)}</b> (${SZS.horiz?'lengde':'høyde'})<br><span class="off">Bom med ${offBy}%</span></div>`;
+    res.classList.add('show');
+  });
+  showFeedback(`${pts>0?'🎯':'😬'} ${escHtml(Q.funFact||'')}`,pts>0);
   endRound();
 }
 // ── FELLES ──
