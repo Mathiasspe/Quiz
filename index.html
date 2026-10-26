@@ -242,6 +242,20 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:1
 .movie-ac-item em{color:var(--accent);font-style:normal;font-weight:700;}
 .movie-wrong-guess{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px;min-height:28px;}
 .movie-wrong-pill{background:rgba(255,95,109,.12);border:1px solid rgba(255,95,109,.3);color:var(--red);border-radius:99px;padding:3px 12px;font-size:.78rem;font-weight:600;}
+/* ── STØRRELSE ── */
+.size-legend{display:flex;flex-wrap:wrap;gap:8px 18px;margin-bottom:12px;font-size:.85rem;font-weight:600;}
+.size-legend span{display:inline-flex;align-items:center;gap:7px;}
+.size-legend i{width:12px;height:12px;border-radius:3px;flex-shrink:0;}
+.size-legend em{font-style:normal;font-weight:400;color:var(--muted);}
+.size-stage{background:var(--surf2);border:1px solid var(--border);border-radius:12px;overflow:hidden;margin-bottom:16px;}
+.size-stage svg{width:100%;height:auto;display:block;}
+.size-controls{display:flex;align-items:center;gap:12px;}
+.size-controls input[type=range]{flex:1;height:36px;accent-color:var(--yellow);cursor:pointer;touch-action:manipulation;}
+.size-controls input[type=range]:disabled{opacity:.4;cursor:default;}
+.size-step{width:44px;height:44px;flex-shrink:0;border-radius:10px;border:1px solid var(--border);background:var(--surf2);color:var(--text);font-size:1.3rem;font-weight:700;cursor:pointer;touch-action:manipulation;}
+.size-step:hover:not(:disabled){border-color:var(--yellow);color:var(--yellow);}
+.size-step:disabled{opacity:.35;cursor:default;}
+.size-hint{text-align:center;font-size:.78rem;color:var(--muted);margin-top:6px;}
 
 /* ── DEV PREVIEW NAV ── */
 #previewBar{position:fixed;bottom:20px;right:20px;z-index:9999;display:none;background:var(--surf2);border:1px solid var(--accent);border-radius:12px;padding:10px 14px;display:none;align-items:center;gap:10px;box-shadow:0 8px 24px rgba(0,0,0,.6);}
@@ -519,14 +533,29 @@ const ALL_QUESTIONS=[
   {type:"typeB",maxPts:6,question:"Disse landene er rangert etter den samme målestokken. Hva måles?",bars:[{label:"Qatar",value:100,display:"88%"},{label:"Kuwait",value:91,display:"80%"},{label:"UAE",value:90,display:"79%"},{label:"Bahrain",value:79,display:"70%"},{label:"Saudi-Arabia",value:64,display:"56%"}],options:["Oljereserver per innbygger","Utenlandske arbeidere som andel av befolkningen","Gjennomsnittlig internettfart","Kamelhold per 1 000 innbyggere"],answer:1,funFact:"I Qatar er nesten 88% av befolkningen utenlandske arbeidere — de fleste fra Sør-Asia. Landets egne statsborgere er dramatisk i mindretall."},
     {type:"typeB",maxPts:6,question:"Disse landene er rangert etter den samme målestokken. Hva måles?",bars:[{label:"Hellas",value:100,display:"#1"},{label:"Brasil",value:94,display:"#2"},{label:"Kroatia",value:87,display:"#3"},{label:"Portugal",value:82,display:"#4"},{label:"Australia",value:77,display:"#5"}],options:["Naturiststrander per kystlengde","Gjennomsnittlig antall seksualpartnere","Solskinnstimer per år","Forbruk av pornografi per innbygger"],answer:1,funFact:"Grekere rapporterer i snitt flest seksualpartnere globalt — rundt 16,4. Det er nesten dobbelt det globale gjennomsnittet på 9."},
     {type:"typeB",maxPts:6,question:"Disse landene er rangert etter den samme målestokken. Hva måles?",bars:[{label:"Island",value:100,display:"#1"},{label:"New Zealand",value:91,display:"#2"},{label:"Australia",value:87,display:"#3"},{label:"Canada",value:79,display:"#4"},{label:"USA",value:73,display:"#5"}],options:["Sexleketøy per innbygger","Tinder-matcher per bruker","Aksept for lovlig prostitusjon","Kondombruk per innbygger"],answer:0,funFact:"Island topper verden i sexleketøy per innbygger. Den progressive holdningen betyr at slike butikker er like vanlige som dagligvarebutikker i Reykjavik."},
-  {type:"tf",maxPts:5,statement:"Australia er bredere enn månens diameter.",answer:true,funFact:"SANT! Australia er ca. 4 000 km bred. Månens diameter er bare 3 474 km. 🌕"},
-  {type:"tf",maxPts:5,statement:"Canada har flere innsjøer enn resten av verden til sammen.",answer:true,funFact:"SANT! Canada har omtrent 60% av verdens ferskvannsinnsjøer — over 3 millioner totalt. 🍁"},
-  {type:"tf",maxPts:5,statement:"Den kinesiske mur er synlig fra verdensrommet med det blotte øye.",answer:false,funFact:"USANT — en av verdens mest kjente geografimyter! Muren er kun 4–8 meter bred. NASA har avkreftet dette gjentatte ganger. 🚀"},
   {type:"map",maxPts:6,mapQ:0},
   {type:"map",maxPts:6,mapQ:1},
   {type:"map",maxPts:6,mapQ:2},
   {type:"logo",maxPts:5,brand:"Pepsi",logoKey:"pepsi",correctIdx:1,question:"Hvilket av disse er den ekte Pepsi-logoen?",funFact:"Pepsi-logoen fra 2008 har blå øverst til venstre og rød nederst til høyre — med den karakteristiske hvite S-kurven i midten. Logoen er bevisst litt asymmetrisk."},
-  {type:"logo",maxPts:5,brand:"LG",logoKey:"lg",correctIdx:2,question:"Hvilket av disse er den ekte LG-logoen?",funFact:"LG-logoen er et stilisert ansikt: C-buen er konturen, L er nese og munn, og den lille prikken er øyet — plassert øverst til høyre inne i sirkelen. 👁️"}
+  {type:"logo",maxPts:5,brand:"LG",logoKey:"lg",correctIdx:2,question:"Hvilket av disse er den ekte LG-logoen?",funFact:"LG-logoen er et stilisert ansikt: C-buen er konturen, L er nese og munn, og den lille prikken er øyet — plassert øverst til høyre inne i sirkelen. 👁️"},
+  // Størrelse: ref er tegnet i riktig skala, spilleren justerer target. shape: "v" (høyde), "h" (lengde) eller "circle" (diameter).
+  // size er i samme enhet (unit) for begge. Glideren går fra minRatio til maxRatio × referansen (standard 0,1–10).
+  {type:"size",maxPts:6,shape:"v",unit:"m",
+   ref:{name:"Eiffeltårnet",emoji:"🗼",size:330},
+   target:{name:"Preikestolen (høyde over Lysefjorden)",emoji:"⛰️",size:604},
+   funFact:"Preikestolen ruver 604 meter over Lysefjorden — nesten dobbelt så høyt som Eiffeltårnet. 🇳🇴"},
+  {type:"size",maxPts:6,shape:"circle",unit:"km",
+   ref:{name:"Jorda",emoji:"🌍",size:12742},
+   target:{name:"Månen",emoji:"🌕",size:3474},
+   funFact:"Månens diameter er bare 27% av jordas. Likevel er den uvanlig stor for en måne sammenlignet med planeten den går rundt. 🌕"},
+  {type:"size",maxPts:6,shape:"v",unit:"m",
+   ref:{name:"Norsk mann (snitt)",emoji:"🧍",size:1.8},
+   target:{name:"Sjiraff (voksen hann)",emoji:"🦒",size:5.5},
+   funFact:"En voksen sjiraffhann kan bli rundt 5,5 meter høy — tre ganger så høy som en gjennomsnittlig nordmann. Halsen alene er nesten 2 meter. 🦒"},
+  {type:"size",maxPts:6,shape:"h",unit:"m",
+   ref:{name:"Bybuss",emoji:"🚌",size:12},
+   target:{name:"Blåhval (de største)",emoji:"🐋",size:30},
+   funFact:"De største blåhvalene blir rundt 30 meter lange — like lange som to og en halv bybusser. Det er det største dyret som noen gang har levd. 🐋"}
 ];
 
 const MAX_PLAYERS=15;
@@ -589,6 +618,7 @@ function loadQuestion(){
   else if(Q.type==='logo')renderLogo(card);
   else if(Q.type==='hilo')renderHilo(card);
   else if(Q.type==='movie')renderMovie(card);
+  else if(Q.type==='size')renderSize(card);
 }
 function nextQuestion(){
   currentQIdx++;
@@ -950,6 +980,91 @@ function submitMovie(){
     }
   }
 }
+// ── STØRRELSE ──
+// Referansen tegnes i skala, spilleren skalerer target med glideren (logaritmisk).
+// Visningen zoomer ut automatisk så det største objektet alltid får plass.
+let sizeRatio=1;
+function sizeRange(){return[Math.log(Q.minRatio||0.1),Math.log(Q.maxRatio||10)];}
+function sliderToRatio(v){const[lo,hi]=sizeRange();return Math.exp(lo+(hi-lo)*v/1000);}
+function ratioToSlider(r){const[lo,hi]=sizeRange();return Math.round((Math.log(r)-lo)/(hi-lo)*1000);}
+function fmtSize(v,exact){return v.toLocaleString('nb-NO',exact?{}:{maximumSignificantDigits:3})+' '+Q.unit;}
+function renderSize(card){
+  sizeRatio=1;
+  const verb={v:'høy',h:'lang',circle:'stor (diameter)'}[Q.shape]||'stor';
+  card.innerHTML=`${typeBadge(`Størrelse · ${Q.maxPts} poeng`,'var(--blue)')}
+    <div class="q-text">${escHtml(Q.question||`Hvor ${verb} er ${Q.target.name} sammenlignet med ${Q.ref.name}?`)}</div>
+    <div class="size-legend">
+      <span><i style="background:var(--blue)"></i>${Q.ref.emoji} ${escHtml(Q.ref.name)} <em>(i skala)</em></span>
+      <span><i style="background:var(--yellow)"></i>${Q.target.emoji} ${escHtml(Q.target.name)} <em>(juster)</em></span>
+    </div>
+    <div class="size-stage"><svg id="sizeSvg" viewBox="0 0 600 300" xmlns="http://www.w3.org/2000/svg"></svg></div>
+    <div class="size-controls">
+      <button class="size-step" id="sizeMinus" onclick="stepSize(-1)">−</button>
+      <input type="range" id="sizeSlider" min="0" max="1000" value="${ratioToSlider(1)}" oninput="onSizeSlide()"/>
+      <button class="size-step" id="sizePlus" onclick="stepSize(1)">+</button>
+    </div>
+    <div class="size-hint">Dra i glideren til den gule har riktig størrelse</div>
+    <button class="btn" id="sizeLockBtn" onclick="lockSize()">Lås svar</button>
+    <div class="feedback" id="feedback"></div>`;
+  drawSize(false);
+}
+function onSizeSlide(){if(done)return;sizeRatio=sliderToRatio(+document.getElementById('sizeSlider').value);drawSize(false);}
+function stepSize(dir){
+  if(done)return;const sl=document.getElementById('sizeSlider');
+  sl.value=Math.max(0,Math.min(1000,+sl.value+dir*10));onSizeSlide();
+}
+function drawSize(reveal){
+  const svg=document.getElementById('sizeSvg');if(!svg)return;
+  const ref=Q.ref.size,guess=ref*sizeRatio,act=Q.target.size;
+  const tgtMax=reveal?Math.max(guess,act):guess,big=Math.max(ref,tgtMax);
+  const REF='var(--blue)',TGT='var(--yellow)',ACT='var(--accent)';
+  const shapeStyle=(c,outline)=>outline?`fill:none;stroke:${c};stroke-width:3;stroke-dasharray:8 5`:`fill:${c};fill-opacity:.85`;
+  const rect=(x,y,w,h,c,o)=>`<rect x="${x}" y="${y}" width="${Math.max(w,1.5)}" height="${Math.max(h,1.5)}" rx="3" style="${shapeStyle(c,o)}"/>`;
+  const circ=(cx,cy,r,c,o)=>`<circle cx="${cx}" cy="${cy}" r="${Math.max(r,1)}" style="${shapeStyle(c,o)}"/>`;
+  const emoji=(x,y,e)=>`<text x="${x}" y="${y}" font-size="26" text-anchor="middle" dominant-baseline="central">${e}</text>`;
+  let out='';
+  if(Q.shape==='h'){
+    // Lengde: referansen øverst, target under, begge fra samme startlinje
+    const s=490/big,x0=70;
+    out+=emoji(35,95,Q.ref.emoji)+rect(x0,75,ref*s,40,REF);
+    out+=rect(x0,185,guess*s,40,TGT);
+    if(reveal)out+=rect(x0,185,act*s,40,ACT,true);
+    out+=emoji(35,205,Q.target.emoji);
+  }else if(Q.shape==='circle'){
+    // Diameter: to sirkler side om side på samme grunnlinje
+    const base=272,gap=40,s=Math.min(225/big,520/(ref+tgtMax));
+    const dR=ref*s,dT=tgtMax*s,x0=(600-(dR+gap+dT))/2,cxR=x0+dR/2,cxT=x0+dR+gap+dT/2;
+    out+=circ(cxR,base-dR/2,dR/2,REF)+emoji(cxR,base-dR-18,Q.ref.emoji);
+    out+=circ(cxT,base-guess*s/2,guess*s/2,TGT);
+    if(reveal)out+=circ(cxT,base-act*s/2,act*s/2,ACT,true);
+    out+=emoji(cxT,base-dT-18,Q.target.emoji);
+  }else{
+    // Høyde: to søyler på samme bakkelinje
+    const base=280,s=228/big;
+    out+=`<line x1="40" y1="${base}" x2="560" y2="${base}" style="stroke:var(--border);stroke-width:2"/>`;
+    out+=rect(150,base-ref*s,100,ref*s,REF)+emoji(200,base-ref*s-18,Q.ref.emoji);
+    out+=rect(350,base-guess*s,100,guess*s,TGT);
+    if(reveal)out+=rect(350,base-act*s,100,act*s,ACT,true);
+    out+=emoji(400,base-tgtMax*s-18,Q.target.emoji);
+  }
+  svg.innerHTML=out;
+}
+function lockSize(){
+  if(done)return;done=true;
+  ['sizeSlider','sizeMinus','sizePlus'].forEach(id=>{const el=document.getElementById(id);if(el)el.disabled=true;});
+  const lockBtn=document.getElementById('sizeLockBtn');if(lockBtn)lockBtn.style.display='none';
+  const actRatio=Q.target.size/Q.ref.size;
+  // Feil måles som forhold: innenfor 5% gir fullt hus, 2× feil (for stor eller for liten) gir 0
+  const err=Math.abs(Math.log(sizeRatio/actRatio)),full=Math.log(1.05),zero=Math.log(2);
+  const pts=Math.round(Q.maxPts*Math.max(0,Math.min(1,1-(err-full)/(zero-full))));
+  const correct=err<=Math.log(1.2);
+  const off=Math.round((sizeRatio/actRatio-1)*100);
+  const offStr=Math.abs(off)<=1?'så å si perfekt':off>0?`${off}% for stor`:`${-off}% for liten`;
+  drawSize(true);
+  addScore(pts,{type:'size',label:Q.target.name,pts,maxPts:Q.maxPts,correct});
+  showFeedback(`${pts>0?'🎯':'😬'} Ditt svar: ${fmtSize(Q.ref.size*sizeRatio)} (${offStr}). Riktig: <strong>${fmtSize(Q.target.size,true)}</strong> — vist med stiplet grønn strek. +${pts} poeng. ${escHtml(Q.funFact||'')}`,pts>0);
+  endRound();
+}
 // ── FELLES ──
 function addScore(pts,round){
   currentScore+=pts;currentRounds.push(round);document.getElementById('hdrScore').textContent=currentScore;
@@ -1008,7 +1123,7 @@ function showResults(){
   document.getElementById('resName').textContent=playerName;
   document.getElementById('resScore').textContent=currentScore;
   document.getElementById('resMax').textContent=`av ${MAX_SCORE} mulige poeng`;
-  const tl={tradle:'TRADLE',typeB:'GRAF',tf:'S/U',map:'KART',logo:'LOGO',hilo:'H/L',movie:'FILM'};
+  const tl={tradle:'TRADLE',typeB:'GRAF',tf:'S/U',map:'KART',logo:'LOGO',hilo:'H/L',movie:'FILM',size:'STR'};
   document.getElementById('qResults').innerHTML=currentRounds.map(r=>`<div class="q-result-row"><span class="qr-icon">${r.correct?'✅':'❌'}</span><span class="qr-type">${tl[r.type]||r.type}</span><span class="qr-label">${escHtml(r.label)}</span><span class="qr-pts${r.pts===0?' zero':''}">${r.pts}/${r.maxPts}</span></div>`).join('');
   document.getElementById('resLb').innerHTML=buildLbHTML('Resultattavle',true);
   const nb=document.getElementById('newPlayerBtn');nb.disabled=leaderboard.length>=MAX_PLAYERS;nb.textContent=leaderboard.length>=MAX_PLAYERS?'Quiz full':'👤 Ny spiller';
